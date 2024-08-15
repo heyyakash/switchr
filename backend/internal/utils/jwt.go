@@ -8,12 +8,12 @@ import (
 
 type userClaims struct {
 	jwt.RegisteredClaims
-	Email string
+	uid string
 }
 
 var sampleSecretKey = []byte(GetString("SECRET_KEY"))
 
-func GenerateJWT(email string) (string, string, error) {
+func GenerateJWT(uid string) (string, string, error) {
 
 	expirationTime := time.Now().Add(1 * time.Hour).Unix()
 	refreshTokenExpirationTime := time.Now().Add(7 * 24 * time.Hour).Unix()
@@ -22,14 +22,14 @@ func GenerateJWT(email string) (string, string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
 		},
-		Email: email,
+		uid: uid,
 	})
 
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, userClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Unix(refreshTokenExpirationTime, 0)),
 		},
-		Email: email,
+		uid: uid,
 	})
 
 	signedString, err := token.SignedString(sampleSecretKey)
@@ -44,15 +44,18 @@ func GenerateJWT(email string) (string, string, error) {
 
 }
 
-func DecodeJWT(jwtToken string) (string, error) {
+func DecodeJWT(jwtToken string) (string, bool, error) {
 	var userClaim userClaims
-	_, err := jwt.ParseWithClaims(jwtToken, &userClaim, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(jwtToken, &userClaim, func(t *jwt.Token) (interface{}, error) {
 		return sampleSecretKey, nil
 	})
 
 	if err != nil {
-		return "", err
+		return "", false, err
 	}
-	// log.Print(token.Claims)
-	return userClaim.Email, nil
+	var valid bool
+	if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
+		valid = claims.ExpiresAt.After(time.Now())
+	}
+	return userClaim.uid, valid, nil
 }

@@ -39,11 +39,20 @@ func Init() {
 		log.Fatal("Couldn't connect to DB : ", err)
 	}
 	dbName := Database
+
+	// create db
 	createDBQuery := fmt.Sprintf("CREATE DATABASE %s", dbName)
 	err = Store.DB.Exec(createDBQuery).Error
 	if err != nil && err.Error() != fmt.Sprintf("ERROR: database \"%s\" already exists (SQLSTATE 42P04)", dbName) {
 		log.Fatalf("Error creating database: %v", err.Error())
 	}
+	//add extension for uuid
+	Query := `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
+	err = Store.DB.Exec(Query).Error
+	if err != nil {
+		log.Fatalf("Error: ", err)
+	}
+
 	log.Print("DB Connected")
 
 	// create table if not exists
