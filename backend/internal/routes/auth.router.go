@@ -9,7 +9,8 @@ import (
 func AccountRouter(c *gin.Engine) {
 	c.POST("/user/create", handler.CreateNewAccount())
 	c.POST("/user/login", handler.LoginUser())
+	c.POST("/user/magic", handler.SendMagicLink())
+	c.GET("/user/magic/verify/:token", handler.LoginViaMagicLink())
 	c.GET("/user", middleware.Authenticated(), handler.LoginUser())
-	c.POST("/user/magic")
 	// c.POST("/user/email", auth.EmailExists())
 }

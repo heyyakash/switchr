@@ -6,9 +6,11 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type userClaims struct {
+type UserClaims struct {
 	jwt.RegisteredClaims
-	uid string
+	Uid   string
+	Type  string
+	Email string
 }
 
 var sampleSecretKey = []byte(GetString("SECRET_KEY"))
@@ -18,18 +20,20 @@ func GenerateJWT(uid string) (string, string, error) {
 	expirationTime := time.Now().Add(1 * time.Hour).Unix()
 	refreshTokenExpirationTime := time.Now().Add(7 * 24 * time.Hour).Unix()
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, userClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
 		},
-		uid: uid,
+		Uid:  uid,
+		Type: "auth",
 	})
 
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, userClaims{
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Unix(refreshTokenExpirationTime, 0)),
 		},
-		uid: uid,
+		Uid:  uid,
+		Type: "auth",
 	})
 
 	signedString, err := token.SignedString(sampleSecretKey)
@@ -44,18 +48,43 @@ func GenerateJWT(uid string) (string, string, error) {
 
 }
 
-func DecodeJWT(jwtToken string) (string, bool, error) {
-	var userClaim userClaims
+func GenerateJWTWithType(email string, _type string) (string, error) {
+	expirationTime := time.Now().Add(5 * time.Minute).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
+		},
+		Email: email,
+		Type:  _type,
+	})
+
+	signedString, err := token.SignedString(sampleSecretKey)
+	if err != nil {
+		return "", err
+	}
+	return signedString, nil
+
+}
+
+func DecodeJWT(jwtToken string) (UserClaims, bool, error) {
+	var userClaim UserClaims
+
+	// Parse the token with claims
 	token, err := jwt.ParseWithClaims(jwtToken, &userClaim, func(t *jwt.Token) (interface{}, error) {
 		return sampleSecretKey, nil
 	})
 
 	if err != nil {
-		return "", false, err
+		return UserClaims{}, false, err
 	}
-	var valid bool
-	if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
-		valid = claims.ExpiresAt.After(time.Now())
+
+	// Check if the token is valid and the claims are properly parsed into UserClaims
+	if claims, ok := token.Claims.(*UserClaims); ok && token.Valid {
+		// Validate the expiration time
+		valid := claims.ExpiresAt.After(time.Now())
+		return *claims, valid, nil
 	}
-	return userClaim.uid, valid, nil
+
+	// If we reach here, something went wrong
+	return UserClaims{}, false, nil
 }

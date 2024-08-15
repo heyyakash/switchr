@@ -21,14 +21,18 @@ func Authenticated() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("token not provided", false))
 			return
 		}
-		uid, valid, err := utils.DecodeJWT(token)
+		claims, valid, err := utils.DecodeJWT(token)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("token broken", false))
 			log.Print(err)
 			return
 		}
 		if !valid {
-			uid, refreshTokenValid, err := utils.DecodeJWT(refreshToken)
+			reftokenclaims, refreshTokenValid, err := utils.DecodeJWT(refreshToken)
+			if reftokenclaims.Uid != claims.Uid {
+				ctx.AbortWithStatus(http.StatusBadRequest)
+				return
+			}
 			if err != nil {
 				ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("token broken", false))
 				log.Print(err)
@@ -39,7 +43,7 @@ func Authenticated() gin.HandlerFunc {
 				log.Print(err)
 				return
 			}
-			jwt, _, err := utils.GenerateJWT(uid)
+			jwt, _, err := utils.GenerateJWT(reftokenclaims.Uid)
 			if err != nil {
 				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Internal error", false))
 				log.Print(err)
@@ -57,7 +61,7 @@ func Authenticated() gin.HandlerFunc {
 			}
 			http.SetCookie(ctx.Writer, tokenCookie)
 		}
-		ctx.Set("uid", uid)
+		ctx.Set("uid", claims.Uid)
 		ctx.Next()
 	}
 }
