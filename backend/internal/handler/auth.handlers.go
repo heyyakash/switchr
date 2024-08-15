@@ -29,14 +29,19 @@ func CreateNewAccount() gin.HandlerFunc {
 			})
 			return
 		}
-		token, err := utils.GenerateJWT(user.Email)
+		token, refreshToken, err := utils.GenerateJWT(user.Email)
 		if err != nil {
 			log.Print(err)
 			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Couldn't Generate Token", false))
 			return
 		}
+
+		var resp modals.TokenResponse
+		resp.Token = token
+		resp.RefreshToken = refreshToken
+
 		ctx.JSON(http.StatusOK, gin.H{
-			"message": token,
+			"message": resp,
 			"success": true,
 		})
 	}
@@ -61,13 +66,16 @@ func LoginUser() gin.HandlerFunc {
 			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Wrong Credentials", false))
 			return
 		}
-		token, err := utils.GenerateJWT(req.Email)
+		token, refreshToken, err := utils.GenerateJWT(req.Email)
 		if err != nil {
 			log.Print(err)
 			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Couldn't Generate Token", false))
 			return
 		}
-		ctx.JSON(http.StatusOK, utils.ResponseGenerator(token, true))
+		var resp modals.TokenResponse
+		resp.Token = token
+		resp.RefreshToken = refreshToken
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator(resp, true))
 	}
 }
 
