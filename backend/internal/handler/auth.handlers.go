@@ -219,3 +219,67 @@ func DeleteUser() gin.HandlerFunc {
 func UpdateUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {}
 }
+
+func SendVerificationMail() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		uid := ctx.MustGet("uid").(string)
+		user, err := db.Store.GetUserByUid(uid)
+		if err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
+			return
+		}
+		token, err := utils.GenerateJWTWithType(user.Email, "verification")
+		if err != nil {
+			log.Print("Error : Could not generate JWT : ", err)
+			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
+			return
+		}
+		mail := &modals.Email{
+			To:      user.Email,
+			Subject: "Verification Email",
+			Content: fmt.Sprintf("Heyy!! Your verification link is below \n%s", token),
+		}
+		if err := utils.SendEmail(mail); err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email has been sent!", true))
+	}
+}
+
+func VerifyUser() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		token := ctx.Param("token")
+		if token == "" {
+			return
+		}
+		claims, valid, err := utils.DecodeJWT(token)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		if !valid {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Link has expired", false))
+		}
+		if claims.Type != "verification" {
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
+			return
+		}
+		user, err := db.Store.GetUserByEmail(claims.Email)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Some Error Occured", false))
+			return
+		}
+		user.Verified = true
+		if err := db.Store.UpdateUser(&user); err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Some Error Occured", false))
+			return
+		}
+		ctx.AbortWithStatusJSON(http.StatusOK, utils.ResponseGenerator("User Verified Successfullu", true))
+
+	}
+}

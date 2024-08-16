@@ -16,9 +16,10 @@ func Authenticated() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("token not provided", false))
 			return
 		}
-		refreshToken, err := ctx.Cookie("refreshToken")
+		log.Print(token)
+		refreshToken, err := ctx.Cookie("refreshtoken")
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("token not provided", false))
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("refresh token not provided", false))
 			return
 		}
 		claims, valid, err := utils.DecodeJWT(token)

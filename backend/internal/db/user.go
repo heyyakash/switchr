@@ -36,3 +36,8 @@ func (p *PostgresStore) GetUserByEmail(email string) (modals.Users, error) {
 	return user, nil
 
 }
+
+func (p *PostgresStore) UpdateUser(user *modals.Users) error {
+	result := p.DB.Save(&user)
+	return result.Error
+}
