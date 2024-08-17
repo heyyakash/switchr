@@ -45,6 +45,7 @@ func CreateProject() gin.HandlerFunc {
 		newProjectList, err := db.Store.GetAllProjectsByUid(uid)
 		if err == nil {
 			cache.Redisdb.Set(fmt.Sprintf("USER-%s-PROJECTS", uid), newProjectList)
+			cache.Redisdb.Set(fmt.Sprintf("PROJECT-%s", req.Pid), req)
 		} else {
 			log.Print(err)
 		}
@@ -63,6 +64,10 @@ func GetProject() gin.HandlerFunc {
 			log.Print(err)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
 			return
+		}
+		val, err := cache.Redisdb.Get(fmt.Sprintf("PROJECT-%s", pid))
+		if err == nil {
+			ctx.JSON(http.StatusOK, utils.ResponseGenerator(val, true))
 		}
 		project, err := db.Store.GetProjectByPid(pid)
 		if err != nil {
