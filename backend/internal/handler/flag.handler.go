@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"gihtub.com/heyyakash/switchr/internal/cache"
+	"gihtub.com/heyyakash/switchr/internal/constants"
 	"gihtub.com/heyyakash/switchr/internal/db"
 	"gihtub.com/heyyakash/switchr/internal/modals"
 	"gihtub.com/heyyakash/switchr/internal/utils"
@@ -16,6 +17,10 @@ type CreateFlagRequest struct {
 	Flag  string `json:"flag"`
 	Value string `json:"value"`
 	Pid   string `json:"pid"`
+}
+
+type UpdateFlagRequest struct {
+	Value string `json:"value"`
 }
 
 func CreateFlag() gin.HandlerFunc {
@@ -51,7 +56,7 @@ func CreateFlag() gin.HandlerFunc {
 func GetFlagByFid() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		fid := string(ctx.Param("fid"))
-		val, err := cache.Redisdb.Get(fid)
+		val, err := cache.Redisdb.Get(fmt.Sprintf("FLAG-%s", fid))
 		if err == nil {
 			ctx.JSON(http.StatusOK, utils.ResponseGenerator(val, true))
 			return
@@ -62,5 +67,75 @@ func GetFlagByFid() gin.HandlerFunc {
 			return
 		}
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator(flagval, true))
+	}
+}
+
+func DeleteFlag() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		uid := ctx.MustGet("uid").(string)
+		fid := string(ctx.Param("fid"))
+		flag, err := db.Store.GetFlagByFid(fid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+		userprojectmap, err := db.Store.GetUserProjectMapByUidAndPid(uid, flag.Pid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+		if userprojectmap.Role == constants.Editor || userprojectmap.Role == constants.Owner {
+			if err := db.Store.DeleteFlagByFid(fid); err != nil {
+				log.Print(err)
+				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
+				return
+			}
+			cache.Redisdb.Del(fmt.Sprintf("FLAG-%s", fid))
+			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Flag Deleted Successfully", true))
+			return
+		}
+
+		ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Forbidden", false))
+
+	}
+}
+
+func UpdateFlag() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req UpdateFlagRequest
+		if err := ctx.BindJSON(&req); err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad data provided", false))
+			return
+		}
+		uid := ctx.MustGet("uid").(string)
+		fid := string(ctx.Param("fid"))
+		flag, err := db.Store.GetFlagByFid(fid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+		userprojectmap, err := db.Store.GetUserProjectMapByUidAndPid(uid, flag.Pid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+
+		if userprojectmap.Role == constants.Editor || userprojectmap.Role == constants.Owner {
+			flag.Value = req.Value
+			if err := db.Store.UpdateFlag(&flag); err != nil {
+				log.Print(err)
+				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
+				return
+			}
+			cache.Redisdb.Set(fmt.Sprintf("FLAG-%s", fid), flag)
+			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Flag Deleted Successfully", true))
+			return
+		}
+
+		ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Forbidden", false))
 	}
 }

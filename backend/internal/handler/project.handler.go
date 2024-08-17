@@ -25,16 +25,16 @@ func CreateProject() gin.HandlerFunc {
 			})
 			return
 		}
-		id, err := db.Store.CreateProject(&req)
+		err := db.Store.CreateProject(&req)
 		if err != nil {
 			log.Print(err)
 			ctx.AbortWithStatusJSON(500, utils.ResponseGenerator("Some Error Occuered", false))
 			return
 		}
 		userprojectmap := &modals.UserProjectMap{
-			Uid:       uid,
-			ProjectId: id,
-			Role:      constants.Owner,
+			Uid:  uid,
+			Pid:  req.Pid,
+			Role: constants.Owner,
 		}
 		if err := db.Store.CreateUserProjectMap(userprojectmap); err != nil {
 			log.Print(err)
@@ -50,6 +50,27 @@ func CreateProject() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Project Created", true))
+
+	}
+}
+
+func GetProject() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		uid := ctx.MustGet("uid").(string)
+		pid := string(ctx.Param("pid"))
+		_, err := db.Store.GetUserProjectMapByUidAndPid(uid, pid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+		project, err := db.Store.GetProjectByPid(pid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occured", false))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator(project, true))
 
 	}
 }

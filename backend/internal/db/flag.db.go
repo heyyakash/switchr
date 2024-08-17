@@ -11,17 +11,26 @@ func (p *PostgresStore) CreateFlag(flag *modals.Featureflag) error {
 
 func (p *PostgresStore) GetFlagsByProjectId(pid string) ([]modals.Featureflag, error) {
 	var flags []modals.Featureflag
-	res := p.DB.Where("project_id = ?", pid).Find(&flags)
+	res := p.DB.Where("pid = ?", pid).Find(&flags)
 	return flags, res.Error
 }
 
-func (p *PostgresStore) UpdateFlag(id uint, value string) error {
-	err := p.DB.Where("id = ?").Update("value", value).Error
+func (p *PostgresStore) UpdateFlagByFid(fid string, value string) error {
+	err := p.DB.Where("fid = ?", fid).Update("value", value).Error
+	return err
+}
+
+func (p *PostgresStore) UpdateFlag(flag *modals.Featureflag) error {
+	err := p.DB.Save(&flag).Error
 	return err
 }
 
 func (p *PostgresStore) DeleteFlag(id uint) error {
 	err := p.DB.Where("id = ?", id).Delete(&modals.Featureflag{}).Error
+	return err
+}
+func (p *PostgresStore) DeleteFlagByFid(fid string) error {
+	err := p.DB.Where("fid = ?", fid).Delete(&modals.Featureflag{}).Error
 	return err
 }
 

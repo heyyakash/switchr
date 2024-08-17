@@ -48,3 +48,9 @@ func (r *RedisClient) Get(key string) (string, error) {
 	val, err := r.rdb.Get(ctx, key).Result()
 	return val, err
 }
+
+func (r *RedisClient) Del(key string) {
+	ctx := context.Background()
+	err := r.rdb.Del(ctx, key).Err()
+	log.Print(err)
+}
