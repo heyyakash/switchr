@@ -7,10 +7,10 @@ type Featureflag struct {
 	Flag      string    `gorm:"type:text;not null" json:"flag"`
 	Fid       string    `gorm:"type:uuid;default:uuid_generate_v4();unique;not null" json:"fid"`
 	Value     string    `gorm:"type:text;not null" json:"value"`
-	Pid       string    `gorm:"type:text;not null;constraint:OnDelete:CASCADE;" json:"pid"`
+	Pid       string    `gorm:"type:uuid;not null" json:"pid"`
 	CreatedBy string    `gorm:"type:text;not null" json:"createdBy"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	Project Projects `gorm:"foreignKey:Pid;references:Id"`
+	Project Projects `gorm:"foreignKey:Pid;references:Pid;constraint:OnDelete:CASCADE;"`
 }

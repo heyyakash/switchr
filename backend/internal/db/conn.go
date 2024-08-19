@@ -25,8 +25,24 @@ type PostgresStore struct {
 var Store PostgresStore
 
 func (p *PostgresStore) CreateTable() {
+	// Create Projects table first
+	if err := p.DB.AutoMigrate(&modals.Projects{}); err != nil {
+		log.Fatalf("Couldn't migrate Projects: %v", err)
+	}
+
+	// Create Users table
 	if err := p.DB.AutoMigrate(&modals.Users{}); err != nil {
-		log.Fatal("Couldn't Migrate : ", err)
+		log.Fatalf("Couldn't migrate Users: %v", err)
+	}
+
+	// Create UserProjectMap table
+	if err := p.DB.AutoMigrate(&modals.UserProjectMap{}); err != nil {
+		log.Fatalf("Couldn't migrate UserProjectMap: %v", err)
+	}
+
+	//Create Feature flag table
+	if err := p.DB.AutoMigrate(&modals.Featureflag{}); err != nil {
+		log.Fatalf("Couldn't migrate Feature Flag: %v", err)
 	}
 }
 
