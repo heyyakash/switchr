@@ -54,11 +54,11 @@ func Authenticated() gin.HandlerFunc {
 				Name:     "token",
 				Path:     "/",
 				Value:    jwt,
-				Domain:   ctx.Request.Host,
+				Domain:   "localhost",
 				Expires:  time.Now().Add(1 * time.Hour),
-				Secure:   true,
+				Secure:   false,
 				HttpOnly: true,
-				SameSite: http.SameSiteNoneMode,
+				SameSite: http.SameSiteLaxMode,
 			}
 			http.SetCookie(ctx.Writer, tokenCookie)
 		}

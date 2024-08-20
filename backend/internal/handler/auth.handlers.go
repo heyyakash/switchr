@@ -45,24 +45,25 @@ func CreateNewAccount() gin.HandlerFunc {
 				Name:     "token",
 				Path:     "/",
 				Value:    token,
-				Domain:   ctx.Request.Host,
+				Domain:   "localhost",
 				Expires:  time.Now().Add(1 * time.Hour),
-				Secure:   true,
+				Secure:   false,
 				HttpOnly: true,
-				SameSite: http.SameSiteNoneMode,
+				SameSite: http.SameSiteLaxMode,
 			}
 			refreshTokenCookie := &http.Cookie{
 				Name:     "refreshtoken",
 				Path:     "/",
 				Value:    refreshToken,
-				Domain:   ctx.Request.Host,
-				Expires:  time.Now().Add(1 * time.Hour),
-				Secure:   true,
+				Domain:   "localhost",
+				Expires:  time.Now().Add(7 * 24 * time.Hour),
+				Secure:   false,
 				HttpOnly: true,
-				SameSite: http.SameSiteNoneMode,
+				SameSite: http.SameSiteLaxMode,
 			}
 			http.SetCookie(ctx.Writer, tokenCookie)
 			http.SetCookie(ctx.Writer, refreshTokenCookie)
+
 			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Success", true))
 			return
 		}
@@ -99,21 +100,21 @@ func LoginUser() gin.HandlerFunc {
 			Name:     "token",
 			Path:     "/",
 			Value:    token,
-			Domain:   ctx.Request.Host,
+			Domain:   "localhost",
 			Expires:  time.Now().Add(1 * time.Hour),
-			Secure:   true,
+			Secure:   false,
 			HttpOnly: true,
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 		}
 		refreshTokenCookie := &http.Cookie{
 			Name:     "refreshtoken",
 			Path:     "/",
 			Value:    refreshToken,
-			Domain:   ctx.Request.Host,
+			Domain:   "localhost",
 			Expires:  time.Now().Add(7 * 24 * time.Hour),
-			Secure:   true,
+			Secure:   false,
 			HttpOnly: true,
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 		}
 		http.SetCookie(ctx.Writer, tokenCookie)
 		http.SetCookie(ctx.Writer, refreshTokenCookie)
@@ -188,21 +189,21 @@ func LoginViaMagicLink() gin.HandlerFunc {
 					Name:     "token",
 					Path:     "/",
 					Value:    token,
-					Domain:   ctx.Request.Host,
+					Domain:   "localhost",
 					Expires:  time.Now().Add(1 * time.Hour),
-					Secure:   true,
+					Secure:   false,
 					HttpOnly: true,
-					SameSite: http.SameSiteNoneMode,
+					SameSite: http.SameSiteLaxMode,
 				}
 				refreshTokenCookie := &http.Cookie{
 					Name:     "refreshtoken",
 					Path:     "/",
 					Value:    refreshToken,
-					Domain:   ctx.Request.Host,
+					Domain:   "localhost",
 					Expires:  time.Now().Add(7 * 24 * time.Hour),
-					Secure:   true,
+					Secure:   false,
 					HttpOnly: true,
-					SameSite: http.SameSiteNoneMode,
+					SameSite: http.SameSiteLaxMode,
 				}
 				http.SetCookie(ctx.Writer, tokenCookie)
 				http.SetCookie(ctx.Writer, refreshTokenCookie)

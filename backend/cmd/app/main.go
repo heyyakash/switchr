@@ -2,10 +2,14 @@ package main
 
 import (
 	"log"
+	"time"
+
+	"github.com/gin-contrib/cors"
 
 	"gihtub.com/heyyakash/switchr/internal/cache"
 	"gihtub.com/heyyakash/switchr/internal/db"
 	"gihtub.com/heyyakash/switchr/internal/routes"
+	"gihtub.com/heyyakash/switchr/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,6 +29,18 @@ func main() {
 	Init()
 	InitRedis()
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{utils.GetString("CLIENT_ORIGIN")},
+		AllowMethods:     []string{"PUT", "PATCH", "POST", "OPTIONS", "GET", "DELETE"},
+		AllowHeaders:     []string{"Origin", "auth-token", "content-type", "token"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == utils.GetString("CLIENT_ORIGIN")
+		},
+		MaxAge: 12 * time.Hour,
+	}))
+
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "pong",

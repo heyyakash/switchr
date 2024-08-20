@@ -21,7 +21,7 @@ func (p *PostgresStore) GetUserById(id uint) (modals.Users, error) {
 }
 func (p *PostgresStore) GetUserByUid(uid string) (modals.Users, error) {
 	var user modals.Users
-	if result := p.DB.Select("*").Omit("password").Where("uid = ?", uid).First(&user); result.Error != nil {
+	if result := p.DB.Omit("password").Where("uid = ?", uid).First(&user); result.Error != nil {
 		return user, result.Error
 	}
 	return user, nil
