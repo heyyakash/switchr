@@ -1,7 +1,10 @@
 import { headers } from "next/headers"
 
 interface responseInterface {
-    response: any,
+    response: {
+        message:any,
+        success:boolean
+    },
     status: number
 }
 

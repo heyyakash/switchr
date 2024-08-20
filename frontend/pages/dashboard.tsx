@@ -1,5 +1,4 @@
-"use client"
-
+'use client'; 
 
 import { HTTPRequest } from '@/api/api'
 import Dashboard from '@/components/Dashboard/Dashboard'

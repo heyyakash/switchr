@@ -14,7 +14,7 @@ import { Button } from '../ui/button'
 export interface ProjectCardInterface {
   name: string
   createdAt: string
-  createdBy: string
+  owned: boolean
   role: string
   link: string
   flags: number
@@ -26,7 +26,7 @@ const ProjectCard: React.FC<ProjectCardInterface> = (props) => {
       <Card className='relative bg-transparent z-[1]'>
         <CardHeader>
           <CardTitle>{props.name}</CardTitle>
-          <CardDescription className='pt-2 flex items-center justify-between'>{props.createdBy} <Badge>{props.role}</Badge></CardDescription>
+          <CardDescription className='pt-2 flex items-center justify-between'>{props.owned?(<Badge>Owned</Badge>):(<Badge variant={"secondary"}>Shared</Badge>)} <Badge className='ml-auto' variant={"outline"}>{props.createdAt}</Badge></CardDescription>
         </CardHeader>
         <CardContent>
           <p>{props.flags} Flags <Flag></Flag></p>
