@@ -14,9 +14,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CreateProjectRequest struct {
+	Name string `json:"name"`
+}
+
 func CreateProject() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var req modals.Projects
+		var req CreateProjectRequest
 		uid := ctx.MustGet("uid").(string)
 		if err := ctx.BindJSON(&req); err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -25,7 +29,11 @@ func CreateProject() gin.HandlerFunc {
 			})
 			return
 		}
-		err := db.Store.CreateProject(&req)
+		project := &modals.Projects{
+			Name:      req.Name,
+			CreatedBy: uid,
+		}
+		err := db.Store.CreateProject(project)
 		if err != nil {
 			log.Print(err)
 			ctx.AbortWithStatusJSON(500, utils.ResponseGenerator("Some Error Occuered", false))
@@ -33,7 +41,7 @@ func CreateProject() gin.HandlerFunc {
 		}
 		userprojectmap := &modals.UserProjectMap{
 			Uid:  uid,
-			Pid:  req.Pid,
+			Pid:  project.Pid,
 			Role: constants.Owner,
 		}
 		if err := db.Store.CreateUserProjectMap(userprojectmap); err != nil {
@@ -45,7 +53,7 @@ func CreateProject() gin.HandlerFunc {
 		newProjectList, err := db.Store.GetAllProjectsByUid(uid)
 		if err == nil {
 			cache.Redisdb.Set(fmt.Sprintf("USER-%s-PROJECTS", uid), newProjectList)
-			cache.Redisdb.Set(fmt.Sprintf("PROJECT-%s", req.Pid), req)
+			cache.Redisdb.Set(fmt.Sprintf("PROJECT-%s", project.Pid), req)
 		} else {
 			log.Print(err)
 		}
