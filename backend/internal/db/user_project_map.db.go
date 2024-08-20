@@ -15,3 +15,12 @@ func (p *PostgresStore) GetUserProjectMapByUidAndPid(uid string, pid string) (mo
 	}
 	return userprojectmap, nil
 }
+
+func (p *PostgresStore) GetUserProjectMapByUid(uid string) ([]modals.UserProjectMap, error) {
+	var userprojectmaps []modals.UserProjectMap
+	res := p.DB.Where("uid = ?", uid).Find(&userprojectmaps)
+	if res.Error != nil {
+		return []modals.UserProjectMap{}, res.Error
+	}
+	return userprojectmaps, nil
+}

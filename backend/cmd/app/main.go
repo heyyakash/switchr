@@ -23,6 +23,8 @@ func InitRedis() {
 
 func InitRoutes(r *gin.Engine) {
 	routes.AccountRouter(r)
+	routes.UserProjectMapRoutes(r)
+	routes.ProjectRoutes(r)
 }
 
 func main() {
