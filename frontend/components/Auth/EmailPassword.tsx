@@ -16,6 +16,7 @@ import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { HTTPRequest } from '@/api/api'
 
 const formSchema = z.object({
     email: z.string().min(2, {
@@ -27,6 +28,7 @@ const formSchema = z.object({
 
 
 const EmailPassword = () => {
+    const router = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -36,18 +38,17 @@ const EmailPassword = () => {
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/user/login`, {
-        //     method: "POST",
-        //     body: JSON.stringify(values)
-        // })
-        // const result = await res.json()
-        // if (result.success) {
-        //     localStorage.setItem('token', result.message)
-        //     toast.success("Logged In")
-        //     router.push('/dashboard')
-        // } else {
-        //     toast.error(result.message)
-        // }
+        const res = await HTTPRequest(
+            "/user/login", 
+            {body:JSON.stringify(values)},
+            "POST"
+        )
+        if (res.response.success){
+            toast.success("Logged In successfully")
+            router.push("/dashboard")
+        } else {
+            toast.error(res.response.message)
+        }
     }
 
   return (

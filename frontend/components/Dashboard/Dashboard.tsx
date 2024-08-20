@@ -33,7 +33,7 @@ const Dashboard = () => {
     ]
   return (
     <div>
-        <div className='flex items-center justify-between mb-4'>
+        <div className='flex items-center justify-between mb-5'>
         <h2 className='text-xl font-semibold'>Your Projects</h2>
         <Button>Create New</Button>
         </div>

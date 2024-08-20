@@ -20,18 +20,29 @@ import {
 } from "@/components/ui/command"
 import { SearchBox } from '../Command/SearchBox'
 import { Badge } from '../ui/badge'
+import { HTTPRequest } from '@/api/api'
+import { useQuery } from '@tanstack/react-query'
 
 interface props {
     children :ReactNode
 }
 
 const Layout: React.FC<props> = (props) => {
+    const getUser = async () => {
+        return (await HTTPRequest("/user",{}, "GET"))
+    }
+    const {data, error, isLoading} = useQuery({queryKey:["user"] ,queryFn:getUser  })
+    console.log(data,error)
     const router = useRouter()
+    if(data && !data.response.success || error){
+        router.push('/login')
+    }
     const logout = () => {
         document.cookie = `token= ;secure=true; path=/`
         router.push('/login')
     }
  
+
     return (
         <div className='w-full h-screen flex flex-col'>
             <div className='h-[70px] border-b-[1.4px] border-secondary grid grid-rows-1 grid-cols-2 md:grid-cols-3 items-center p-4 px-6'>
@@ -40,7 +51,8 @@ const Layout: React.FC<props> = (props) => {
                     <Link href = "/dashboard" className="flex gap-2 items-center text-primary text-[1.2rem] font-medium ">
                         <Key size={"20px"} /> 
                     </Link>
-                    / <div className='text-md text-primary/50'>Akash Sharma</div>
+                    / <div className='text-md text-primary/50'>{data?.response?.message?.fullname}</div>
+                    {data?.response?.message?.verified ? (<></>):(<Badge variant={"destructive"}>Unverified</Badge>)}
                 </div>
 
                 <div className='hidden md:flex items-center gap-3 px-2 rounded-lg justify-center'>
