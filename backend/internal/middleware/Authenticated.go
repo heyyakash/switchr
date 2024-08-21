@@ -12,11 +12,6 @@ import (
 func Authenticated() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token, err := ctx.Cookie("token")
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("token not provided", false))
-			return
-		}
-		log.Print(token)
 		refreshToken, err := ctx.Cookie("refreshtoken")
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("refresh token not provided", false))

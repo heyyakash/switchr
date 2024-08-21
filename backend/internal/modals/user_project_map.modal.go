@@ -7,9 +7,8 @@ import (
 )
 
 type UserProjectMap struct {
-	Id        uint           `gorm:"primaryKey" json:"id"`
-	Uid       string         `gorm:"type:uuid;not null" json:"uid"`
-	Pid       string         `gorm:"type:uuid;not null" json:"pid"`
+	Uid       string         `gorm:"type:uuid;not null;primaryKey" json:"uid"`
+	Pid       string         `gorm:"type:uuid;not null;primaryKey" json:"pid"`
 	Role      constants.Role `gorm:"not null" json:"role_id"`
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`

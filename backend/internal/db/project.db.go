@@ -43,8 +43,14 @@ func (p *PostgresStore) GetProjectById(id uint) (modals.Projects, error) {
 	return project, res.Error
 }
 
-func (p *PostgresStore) GetFlagByPid(pid string) ([]modals.Featureflag, error) {
-	var flags []modals.Featureflag
-	res := p.DB.Where("pid = ?", pid).Find(&flags)
+func (p *PostgresStore) GetFlagByPid(pid string) ([]modals.FeatureflagWithUserName, error) {
+	var flags []modals.FeatureflagWithUserName
+	// res := p.DB.Where("pid = ?", pid).Find(&flags)
+	res := p.DB.Table("featureflags").
+		Select("featureflags.*, users.full_name").
+		Joins("JOIN users ON users.uid = featureflags.created_by").
+		Where("featureflags.pid = ?::uuid", pid).
+		Find(&flags)
+
 	return flags, res.Error
 }

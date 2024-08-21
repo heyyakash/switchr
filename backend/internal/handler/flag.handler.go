@@ -36,6 +36,7 @@ func CreateFlag() gin.HandlerFunc {
 			Flag:      req.Flag,
 			Value:     req.Value,
 			Pid:       req.Pid,
+			UpdatedBy: uid,
 		}
 		if err := db.Store.CreateFlag(&flag); err != nil {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
