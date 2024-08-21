@@ -30,8 +30,6 @@ const Login = () => {
                     <TabsTrigger value="magiclink">Magic Link</TabsTrigger>
                 </TabsList>
             </Tabs>
-
-         
         </>
     )
 }

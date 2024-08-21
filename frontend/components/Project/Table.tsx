@@ -8,15 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { responseInterface } from '@/api/api'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import TableRowComponent from './TableRow'
+
 
 
 export interface FlagRowInterface {
@@ -25,14 +18,16 @@ export interface FlagRowInterface {
   value: string,
   createdAt: string,
   createdBy: string
+  full_name: string
 }
+
 
 export interface FlagTableInterface {
   list: any
 }
 
 const TableComponent: React.FC<FlagTableInterface> = (props) => {
-  const [open, setOpen] = useState(false)
+
 
   return (
     <Table className='w-full'>
@@ -47,32 +42,7 @@ const TableComponent: React.FC<FlagTableInterface> = (props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {props.list?.map((x: any, i: number) => {
-          return (
-            <>
-              <TableRow onClick={() => setOpen(true)} key={i}>
-                <TableCell className="font-medium  whitespace-nowrap">{x.fid?.length > 10 ? x.fid?.substring(0, 10) + "..." : x.fid}</TableCell>
-                <TableCell>{x.flag}</TableCell>
-                <TableCell>{x.value}</TableCell>
-                <TableCell>{x.full_name}</TableCell>
-                <TableCell>{(new Date(x.createdAt)).toString().substring(0, 15)}</TableCell>
-              </TableRow>
-              <Dialog defaultOpen={false} onOpenChange={setOpen} open={open} >
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete your account
-                      and remove your data from our servers.
-                    </DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
-
-
-            </>
-          )
-        })}
+        {Array.isArray(props.list) && props.list?.map((x: any, i: number) =>  <TableRowComponent full_name= {x?.full_name} fid = {x?.fid} name = {x?.flag} value = {x?.value} createdAt= {x?.createdAt} createdBy= {x.createdBy} key= {i} /> )}
 
       </TableBody>
     </Table>

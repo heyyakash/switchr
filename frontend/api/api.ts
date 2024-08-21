@@ -8,11 +8,6 @@ export interface responseInterface {
     status: number
 }
 
-export interface CustomError extends Error {
-    status?: number;
-    message: string;
-  }
-
 export async function HTTPRequest(
     endpoint :string,
     options : any,
@@ -25,11 +20,6 @@ export async function HTTPRequest(
         ...options
     })
     const result = await req.json()
-    if(req.status!==200){
-        const error : CustomError = new Error(result?.message || "Unkown Error")
-        error.status = req.status
-        throw error
-    }
     return {
         response:result,
         status: req.status

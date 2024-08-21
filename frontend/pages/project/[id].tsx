@@ -1,7 +1,9 @@
 import Project from '@/components/Project/Project'
 import { GetServerSideProps } from 'next'
 import React from 'react'
+import dynamic from 'next/dynamic';
 
+const NoSSRComponent = dynamic(() => import('@/components/Project/Project'), { ssr: false });
 interface props{
   id: string
 }
@@ -10,7 +12,7 @@ interface props{
 const ProjectContainer: React.FC<props> = (props) => {
   return (
     <div className='max-w-[1200px] w-full mx-auto p-4 px-6'>
-   <Project id = {props.id} />
+   <NoSSRComponent id = {props.id} />
    </div>
   )
 }

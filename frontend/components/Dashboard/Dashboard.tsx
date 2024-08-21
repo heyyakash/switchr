@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import ProjectCard, { ProjectCardInterface } from '../CardComponent/ProjectCard'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -28,6 +28,11 @@ const formSchema = z.object({
 
 
 const Dashboard = () => {
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+      setIsClient(true);
+    }, []);
     const queryClient = useQueryClient()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

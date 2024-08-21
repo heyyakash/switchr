@@ -36,38 +36,6 @@ const formSchema = z.object({
 
 const Project: React.FC<props> = ({id}) => {
     const queryClient = useQueryClient()
-    const router = useRouter()
-    const Flags: FlagRowInterface[] = [
-        {
-            fid: "sadasdf-sada21-asd213-232134",
-            name: "SHOW_FEATURE",
-            value: "TRUE",
-            createdAt: "25th JUL 2025",
-            createdBy: "Akash Sharma",
-        },
-        {
-            fid: "sadasdf-sada21-asd213-232134",
-            name: "SHOW_FEATURE",
-            value: "TRUE",
-            createdAt: "25th JUL 2025",
-            createdBy: "Akash Sharma",
-        },
-        {
-            fid: "sadasdf-sada21-asd213-232134",
-            name: "SHOW_FEATURE",
-            value: "TRUE",
-            createdAt: "25th JUL 2025",
-            createdBy: "Akash Sharma",
-        },
-        {
-            fid: "sadasdf-sada21-asd213-232134",
-            name: "SHOW_FEATURE",
-            value: "TRUE",
-            createdAt: "25th JUL 2025",
-            createdBy: "Akash Sharma",
-        },
-    ]
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
