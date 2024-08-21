@@ -8,8 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from '../ui/badge'
-import { ArrowUpRight, Flag, Link } from 'lucide-react'
+import { ArrowUpRight, Flag } from 'lucide-react'
 import { Button } from '../ui/button'
+import Link from 'next/link'
 
 export interface ProjectCardInterface {
   name: string
@@ -32,7 +33,9 @@ const ProjectCard: React.FC<ProjectCardInterface> = (props) => {
           <p>{props.flags} Flags <Flag></Flag></p>
         </CardContent>
         <CardFooter className='w-full'>
+          <Link href={`/project/${props.link}`}>
           <Button variant={"default"} className='w-full'>Open <ArrowUpRight /></Button>
+          </Link>
         </CardFooter>
       </Card>
   <div className='absolute z-[0] top-0 -rotate-90  text-[10rem] text-primary/10 font-bold '>{props.name}</div>

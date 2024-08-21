@@ -18,7 +18,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
-import { Form } from '../ui/form'
 
 
 const formSchema = z.object({
@@ -57,7 +56,7 @@ const Dashboard = () => {
             name: "Heavenly Project",
             link: "www.google.com",
             createdAt: "29th Jan, 2002",
-            createdBy: "Akash Sharma",
+            owned :false,
             role: "Creator",
             flags: 24,
         },
@@ -65,7 +64,7 @@ const Dashboard = () => {
             name: "Heavenly Project",
             link: "www.google.com",
             createdAt: "29th Jan, 2002",
-            createdBy: "Akash Sharma",
+            owned :false,
             role: "Creator",
             flags: 24,
         },
@@ -73,7 +72,7 @@ const Dashboard = () => {
             name: "Heavenly Project",
             link: "www.google.com",
             createdAt: "29th Jan, 2002",
-            createdBy: "Akash Sharma",
+            owned :false,
             role: "Creator",
             flags: 24,
         },
@@ -85,7 +84,6 @@ const Dashboard = () => {
             return (await HTTPRequest("/userprojectmap", {}, "GET"))
         }
     })
-    console.log(typeof data?.response.message, data?.response.message[0])
     return (
         <div>
             <div className='flex items-center justify-between mb-5'>
@@ -116,14 +114,14 @@ const Dashboard = () => {
             <div className='w-full grid gap-6 grid-cols-3 grid-rows-auto'>
                 {Project.map((x, i) => {
                     return (
-                        <ProjectCard key={i} name={x.name} link={x.link} createdAt={x.createdAt} createdBy={x.createdBy} flags={x.flags} role={x.role} />
+                        <ProjectCard key={i} name={x.name} link={x.link} createdAt={x.createdAt} owned = {false} flags={x.flags} role={x.role} />
                     )
                 })}
                 {data && data.response.message.length>0 ? 
                 
                 data.response.message?.map((x:any,y:number)=>{
                     return(
-                        <ProjectCard key = {y} name = {x?.Project.name} link = {x.pid} createdBy={x?.Project?.createdBy} owned = {x?.Project?.createdBy===x?.uid} createdAt='12 Jan 2002' flags = {1} role = {x.role_id} />
+                        <ProjectCard key = {y} name = {x?.Project.name} link = {x.pid} owned = {x?.Project?.createdBy===x?.uid} createdAt={(new Date(x?.Project?.createdAt).toString().substring(0,15))} flags = {1} role = {x.role_id} />
                     )
                 })
                 :(<></>)}

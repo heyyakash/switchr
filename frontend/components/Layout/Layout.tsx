@@ -21,7 +21,7 @@ import {
 import { SearchBox } from '../Command/SearchBox'
 import { Badge } from '../ui/badge'
 import { HTTPRequest } from '@/api/api'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 interface props {
     children :ReactNode
@@ -32,7 +32,13 @@ const Layout: React.FC<props> = (props) => {
         return (await HTTPRequest("/user",{}, "GET"))
     }
     const {data, error, isLoading} = useQuery({queryKey:["user"] ,queryFn:getUser  })
-    console.log(data,error)
+    const client = useQueryClient()
+    const { data:userprojectmap } = useQuery({
+        queryKey: ["projects"],
+        queryFn: async () => {
+            return (await HTTPRequest("/userprojectmap", {}, "GET"))
+        }
+    })
     const router = useRouter()
     if(data && !data.response.success || error){
         router.push('/login')
@@ -77,8 +83,8 @@ const Layout: React.FC<props> = (props) => {
                                 <div className='w-full grid grid-cols-2 rounded-lg overflow-hidden grid-rows-1'>
                                     <img src="https://github.com/shadcn.png" alt="" />
                                     <div className='bg-primary flex flex-col justify-center dark:text-black items-center'>
-                                        <h2 className='text-4xl '>24</h2>
-                                        <p>Notes</p>
+                                        <h2 className='text-4xl '>{userprojectmap?.response?.message?.length}</h2>
+                                        <p>Projects</p>
                                     </div>
                                 </div>
                                 <Button variant={"secondary"} size = {"lg"} className='w-full'>Settings</Button>

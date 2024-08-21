@@ -1,12 +1,17 @@
 import { headers } from "next/headers"
 
-interface responseInterface {
+export interface responseInterface {
     response: {
         message:any,
         success:boolean
     },
     status: number
 }
+
+export interface CustomError extends Error {
+    status?: number;
+    message: string;
+  }
 
 export async function HTTPRequest(
     endpoint :string,
@@ -20,6 +25,11 @@ export async function HTTPRequest(
         ...options
     })
     const result = await req.json()
+    if(req.status!==200){
+        const error : CustomError = new Error(result?.message || "Unkown Error")
+        error.status = req.status
+        throw error
+    }
     return {
         response:result,
         status: req.status
