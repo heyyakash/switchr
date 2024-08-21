@@ -8,4 +8,5 @@ import (
 
 func ProjectRoutes(c *gin.Engine) {
 	c.POST("/project/create", middleware.Authenticated(), handler.CreateProject())
+	c.GET("/project/:pid", middleware.Authenticated(), handler.GetProject())
 }

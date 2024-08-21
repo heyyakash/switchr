@@ -43,8 +43,8 @@ func (p *PostgresStore) GetProjectById(id uint) (modals.Projects, error) {
 	return project, res.Error
 }
 
-func (p *PostgresStore) GetFlagByPid(fid string) (modals.Projects, error) {
-	var project modals.Projects
-	res := p.DB.Where("pid = ?", fid).First(&project)
-	return project, res.Error
+func (p *PostgresStore) GetFlagByPid(pid string) ([]modals.Featureflag, error) {
+	var flags []modals.Featureflag
+	res := p.DB.Where("pid = ?", pid).Find(&flags)
+	return flags, res.Error
 }

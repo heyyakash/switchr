@@ -31,12 +31,11 @@ func CreateFlag() gin.HandlerFunc {
 			return
 		}
 		uid := ctx.MustGet("uid").(string)
-		pid := string(ctx.Param("pid"))
 		flag := modals.Featureflag{
 			CreatedBy: uid,
 			Flag:      req.Flag,
 			Value:     req.Value,
-			Pid:       pid,
+			Pid:       req.Pid,
 		}
 		if err := db.Store.CreateFlag(&flag); err != nil {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
@@ -99,6 +98,19 @@ func DeleteFlag() gin.HandlerFunc {
 
 		ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Forbidden", false))
 
+	}
+}
+
+func GetFlagByPid() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		pid := string(ctx.Param("pid"))
+		res, err := db.Store.GetFlagByPid(pid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator(res, true))
 	}
 }
 
