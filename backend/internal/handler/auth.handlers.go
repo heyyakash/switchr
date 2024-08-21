@@ -224,6 +224,7 @@ func UpdateUser() gin.HandlerFunc {
 func SendVerificationMail() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		uid := ctx.MustGet("uid").(string)
+		host := utils.GetString("HOST")
 		user, err := db.Store.GetUserByUid(uid)
 		if err != nil {
 			log.Print(err)
@@ -239,7 +240,7 @@ func SendVerificationMail() gin.HandlerFunc {
 		mail := &modals.Email{
 			To:      user.Email,
 			Subject: "Verification Email",
-			Content: fmt.Sprintf("Heyy!! Your verification link is below \n%s", token),
+			Content: fmt.Sprintf("Heyy!! Your verification link is below \n%s/user/verify/%s", host, token),
 		}
 		if err := utils.SendEmail(mail); err != nil {
 			log.Print(err)
