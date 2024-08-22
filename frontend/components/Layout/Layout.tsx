@@ -49,6 +49,7 @@ const Layout: React.FC<props> = (props) => {
     }
 
     const VerifyUser = async () => {
+        setEmailSent(false)
         setOpen(true)
         const res = await HTTPRequest("/user/verify", {}, "POST")
         if (res.response.success) {

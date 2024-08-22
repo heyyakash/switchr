@@ -56,33 +56,7 @@ const Dashboard = () => {
             toast.error(res.response.message)
         }
     }
-    const Project: ProjectCardInterface[] = [
-        {
-            name: "Heavenly Project",
-            link: "www.google.com",
-            createdAt: "29th Jan, 2002",
-            owned :false,
-            role: "Creator",
-            flags: 24,
-        },
-        {
-            name: "Heavenly Project",
-            link: "www.google.com",
-            createdAt: "29th Jan, 2002",
-            owned :false,
-            role: "Creator",
-            flags: 24,
-        },
-        {
-            name: "Heavenly Project",
-            link: "www.google.com",
-            createdAt: "29th Jan, 2002",
-            owned :false,
-            role: "Creator",
-            flags: 24,
-        },
 
-    ]
     const { data, error, isLoading } = useQuery({
         queryKey: ["projects"],
         queryFn: async () => {
@@ -117,11 +91,6 @@ const Dashboard = () => {
             </div>
 
             <div className='w-full grid gap-6 grid-cols-3 grid-rows-auto'>
-                {Project.map((x, i) => {
-                    return (
-                        <ProjectCard key={i} name={x.name} link={x.link} createdAt={x.createdAt} owned = {false} flags={x.flags} role={x.role} />
-                    )
-                })}
                 {data && data.response.message.length>0 ? 
                 
                 data.response.message?.map((x:any,y:number)=>{

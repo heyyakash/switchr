@@ -20,6 +20,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { useRouter } from 'next/router'
+import GenerateTokenComp from './GenerateTokenComp'
 
 interface props {
     id :string
@@ -80,6 +81,8 @@ const Project: React.FC<props> = ({id}) => {
         <div className='w-full'>
             <div className='mb-4 flex items-center justify-between'>
                 <h2 className='text-xl font-semibold'>{projectdata?.response.message.name}</h2>
+                <div className='flex items-center gap-3'>
+                <GenerateTokenComp id = {id} />
                 <Sheet>
                     <SheetTrigger><Button variant={"default"}>Create Flag</Button></SheetTrigger>
                     <SheetContent>
@@ -103,7 +106,8 @@ const Project: React.FC<props> = ({id}) => {
                     </SheetContent>
                 </Sheet>
 
-
+                </div>
+ 
             </div>
             <TableComponent list={data?.response.message} />
         </div>
