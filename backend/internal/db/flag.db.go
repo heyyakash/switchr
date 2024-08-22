@@ -1,6 +1,8 @@
 package db
 
 import (
+	"errors"
+
 	"gihtub.com/heyyakash/switchr/internal/modals"
 )
 
@@ -43,5 +45,13 @@ func (p *PostgresStore) GetFlagById(id uint) (modals.Featureflag, error) {
 func (p *PostgresStore) GetFlagByFid(fid string) (modals.Featureflag, error) {
 	var flag modals.Featureflag
 	res := p.DB.Where("fid = ?", fid).First(&flag)
+	return flag, res.Error
+}
+func (p *PostgresStore) GetFlagByNameAndPid(name string, pid string) (modals.Featureflag, error) {
+	var flag modals.Featureflag
+	res := p.DB.Where("pid = ?", pid).Where("flag = ?", name).First(&flag)
+	if res.RowsAffected == 0 {
+		return flag, errors.New("not found")
+	}
 	return flag, res.Error
 }

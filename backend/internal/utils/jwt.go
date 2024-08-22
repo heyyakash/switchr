@@ -11,6 +11,7 @@ type UserClaims struct {
 	Uid   string
 	Type  string
 	Email string
+	Pid   string
 }
 
 var sampleSecretKey = []byte(GetString("SECRET_KEY"))
@@ -48,14 +49,31 @@ func GenerateJWT(uid string) (string, string, error) {
 
 }
 
-func GenerateJWTWithType(email string, _type string) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute).Unix()
+func GenerateJWTWithType(email string, _type string, expirationTime int64) (string, error) {
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
 		},
 		Email: email,
 		Type:  _type,
+	})
+
+	signedString, err := token.SignedString(sampleSecretKey)
+	if err != nil {
+		return "", err
+	}
+	return signedString, nil
+
+}
+func GenerateApiJWTWithType(pid string, _type string, expirationTime int64) (string, error) {
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
+		},
+		Pid:  pid,
+		Type: _type,
 	})
 
 	signedString, err := token.SignedString(sampleSecretKey)

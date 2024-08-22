@@ -1,6 +1,10 @@
 package db
 
-import "gihtub.com/heyyakash/switchr/internal/modals"
+import (
+	"errors"
+
+	"gihtub.com/heyyakash/switchr/internal/modals"
+)
 
 func (p *PostgresStore) CreateUserProjectMap(userprojectmap *modals.UserProjectMap) error {
 	err := p.DB.Create(&userprojectmap).Error
@@ -12,6 +16,10 @@ func (p *PostgresStore) GetUserProjectMapByUidAndPid(uid string, pid string) (mo
 	res := p.DB.Where("uid = ?", uid).Where("pid = ?", pid).First(&userprojectmap)
 	if res.Error != nil {
 		return modals.UserProjectMap{}, res.Error
+	}
+	if res.RowsAffected == 0 {
+
+		return modals.UserProjectMap{}, errors.New("no matching record found")
 	}
 	return userprojectmap, nil
 }

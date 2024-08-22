@@ -147,7 +147,7 @@ func SendMagicLink() gin.HandlerFunc {
 		if err != nil {
 			return
 		}
-		token, err := utils.GenerateJWTWithType(user.Email, "magic_link")
+		token, err := utils.GenerateJWTWithType(user.Email, "magic_link", time.Now().Add(5*time.Minute).Unix())
 		if err != nil {
 			log.Print(err)
 			return
@@ -231,7 +231,7 @@ func SendVerificationMail() gin.HandlerFunc {
 			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
 			return
 		}
-		token, err := utils.GenerateJWTWithType(user.Email, "verification")
+		token, err := utils.GenerateJWTWithType(user.Email, "verification", time.Now().Add(5*time.Minute).Unix())
 		if err != nil {
 			log.Print("Error : Could not generate JWT : ", err)
 			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))

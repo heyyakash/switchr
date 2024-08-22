@@ -44,7 +44,7 @@ func CreateFlag() gin.HandlerFunc {
 		}
 
 		// creating new cache
-		if err := cache.Redisdb.Set(fmt.Sprintf("FLAG-%s", flag.Fid), flag); err != nil {
+		if err := cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", req.Pid, flag.Flag), flag); err != nil {
 			log.Print(err)
 		}
 

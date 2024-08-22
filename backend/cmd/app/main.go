@@ -26,6 +26,7 @@ func InitRoutes(r *gin.Engine) {
 	routes.UserProjectMapRoutes(r)
 	routes.ProjectRoutes(r)
 	routes.FlagRoutes(r)
+	routes.ApiRoutes(r)
 }
 
 func main() {
