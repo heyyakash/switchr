@@ -43,20 +43,20 @@ const Layout: React.FC<props> = (props) => {
     if (data && !data.response.success || error) {
         router.push('/login')
     }
-    const logout = () => {
-        document.cookie = `token= ;secure=true; path=/`
-        router.push('/login')
+    const logout = async() => {
+        await HTTPRequest("/user/logout", {}, "POST")
+    
     }
 
     const VerifyUser = async () => {
         setEmailSent(false)
         setOpen(true)
         const res = await HTTPRequest("/user/verify", {}, "POST")
-        if (res.response.success) {
+        if (res?.response.success) {
             toast.success(res.response.message)
             setEmailSent(true)
         } else {
-            toast.error(res.response.message)
+            toast.error(res?.response.message)
         }
     }
 

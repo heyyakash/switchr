@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,6 +16,8 @@ import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { HTTPRequest } from '@/api/api'
+import { RotateCw } from 'lucide-react'
 
 const formSchema = z.object({
     email: z.string().min(2, {
@@ -26,6 +28,7 @@ const formSchema = z.object({
 
 
 const MagicLinks = () => {
+    const [sending, setSending] = useState(false)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -34,18 +37,14 @@ const MagicLinks = () => {
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/user/login`, {
-        //     method: "POST",
-        //     body: JSON.stringify(values)
-        // })
-        // const result = await res.json()
-        // if (result.success) {
-        //     localStorage.setItem('token', result.message)
-        //     toast.success("Logged In")
-        //     router.push('/dashboard')
-        // } else {
-        //     toast.error(result.message)
-        // }
+        setSending(true)
+        const res = await HTTPRequest(`/user/magic`, {body: JSON.stringify(values)}, "POST" )
+        if(res?.response.success){
+            toast.success("Kindly check you registered email for the login link")
+        }else{
+            toast.error("Some error occured")
+        }
+        setSending(false)
     }
 
   return (
@@ -68,7 +67,7 @@ const MagicLinks = () => {
                 </FormItem>
             )}
         />
-        <Button type="submit" size={"lg"} className="mt-6 text-lg w-full" variant={"default"}>Login</Button>
+        <Button type="submit" size={"lg"} className="mt-6 text-lg w-full" variant={"default"}>{sending ? (<RotateCw size={20} className='animate-spin' />) : ("Send Magic Link")}</Button>
     </form>
 </Form>
   )

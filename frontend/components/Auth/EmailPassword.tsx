@@ -43,11 +43,11 @@ const EmailPassword = () => {
             {body:JSON.stringify(values)},
             "POST"
         )
-        if (res.response.success){
+        if (res?.response.success){
             toast.success("Logged In successfully")
             router.push("/dashboard")
         } else {
-            toast.error(res.response.message)
+            toast.error(res?.response.message)
         }
     }
 

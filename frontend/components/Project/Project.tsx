@@ -68,11 +68,11 @@ const Project: React.FC<props> = ({id}) => {
             value : payload.value
         }
         const res = await HTTPRequest("/flags/create", {body:JSON.stringify(obj)}, "POST")
-        if (res.response.success){
+        if (res?.response.success){
             queryClient.invalidateQueries({queryKey:["flags"]})
             toast.success("Flag created successfully")
         }else{
-            toast.error(res.response.message)
+            toast.error(res?.response.message)
         }
 
     }

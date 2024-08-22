@@ -38,7 +38,7 @@ const GenerateTokenComp: React.FC<props> = (props) => {
         setToken(null)
         setGenerating(true)
         const res = await HTTPRequest(`/api/create/${props.id}`, {}, "GET")
-        if (res.response.success) {
+        if (res?.response.success) {
             setGenerating(false)
             setToken(res.response.message)
         } else {

@@ -41,27 +41,27 @@ const TableRowComponent: React.FC<FlagRowInterface> = (props) => {
       value : payload.value
     }
     const res = await HTTPRequest(`/flags/${props.fid}`, {body:JSON.stringify(obj)}, "PATCH")
-    if (res.response.success){
+    if (res?.response.success){
       toast.success(res.response.message)
       queryClient.invalidateQueries({
         queryKey:["flags"]
       })
       setOpen(false)
     }else{
-      toast.error(res.response.message)
+      toast.error(res?.response.message)
     }
   }
   
   const DeleteFlag = async  () => {
     const res = await HTTPRequest(`/flags/${props.fid}`,{}, "DELETE")
-    if (res.response.success){
+    if (res?.response.success){
       toast.success(res.response.message)
       queryClient.invalidateQueries({
         queryKey:["flags"]
       })
       setOpen(false)
     }else{
-      toast.error(res.response.message)
+      toast.error(res?.response.message)
     }
   }
   return (

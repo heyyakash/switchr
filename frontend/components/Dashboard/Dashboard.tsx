@@ -47,13 +47,13 @@ const Dashboard = () => {
             { body: JSON.stringify(values) },
             "POST"
         )
-        if (res.response.success) {
+        if (res?.response.success) {
             toast.success(res.response.message)
             queryClient.invalidateQueries({
                 queryKey:["projects"]
             })
         } else {
-            toast.error(res.response.message)
+            toast.error(res?.response.message)
         }
     }
 
@@ -63,7 +63,9 @@ const Dashboard = () => {
             return (await HTTPRequest("/userprojectmap", {}, "GET"))
         }
     })
+    console.log(data)
     return (
+        data &&
         <div>
             <div className='flex items-center justify-between mb-5'>
                 <h2 className='text-xl font-semibold'>Your Projects</h2>
@@ -93,7 +95,7 @@ const Dashboard = () => {
             <div className='w-full grid gap-6 grid-cols-3 grid-rows-auto'>
                 {data && data.response.message.length>0 ? 
                 
-                data.response.message?.map((x:any,y:number)=>{
+                data?.response?.message?.map((x:any,y:number)=>{
                     return(
                         <ProjectCard key = {y} name = {x?.Project.name} link = {x.pid} owned = {x?.Project?.createdBy===x?.uid} createdAt={(new Date(x?.Project?.createdAt).toString().substring(0,15))} flags = {1} role = {x.role_id} />
                     )
