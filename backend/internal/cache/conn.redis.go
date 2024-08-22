@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 
 	"github.com/redis/go-redis/v9"
@@ -39,7 +40,11 @@ func (r *RedisClient) ConnectRedis() {
 
 func (r *RedisClient) Set(key string, value interface{}) error {
 	ctx := context.Background()
-	err := r.rdb.Set(ctx, key, value, 0).Err()
+	val, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+	err = r.rdb.Set(ctx, key, val, 0).Err()
 	return err
 }
 

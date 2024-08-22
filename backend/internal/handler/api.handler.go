@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -44,11 +43,7 @@ func GetFlagFromAPI() gin.HandlerFunc {
 				ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("Record not found", false))
 				return
 			}
-			k, err := json.Marshal(val)
-			if err != nil {
-				log.Print(err)
-			}
-			if err := cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", pid, key), k); err != nil {
+			if err := cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", pid, key), val); err != nil {
 				log.Print("Redis err : ", err)
 			}
 			ctx.JSON(http.StatusOK, gin.H{"flag": val})

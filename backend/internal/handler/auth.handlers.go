@@ -155,12 +155,13 @@ func SendMagicLink() gin.HandlerFunc {
 		email := &modals.Email{
 			To:      req.Email,
 			Subject: "Magic Link",
-			Content: fmt.Sprintf("Heyy! Your login link is as follows and is only valid for 5 minutes. \n%s", token),
+			Content: fmt.Sprintf("Heyy! Your login link is as follows and is only valid for 5 minutes. \n%s/user/magic/verify/%s", utils.GetString("HOST"), token),
 		}
 		if err := utils.SendEmail(email); err != nil {
 			log.Print(err)
 			return
 		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email sent successfully", true))
 	}
 }
 func LoginViaMagicLink() gin.HandlerFunc {
@@ -173,7 +174,6 @@ func LoginViaMagicLink() gin.HandlerFunc {
 		}
 
 		if valid {
-			log.Print("Valid")
 			if claims.Type == "magic_link" {
 				user, err := db.Store.GetUserByEmail(claims.Email)
 				if err != nil {
@@ -207,7 +207,7 @@ func LoginViaMagicLink() gin.HandlerFunc {
 				}
 				http.SetCookie(ctx.Writer, tokenCookie)
 				http.SetCookie(ctx.Writer, refreshTokenCookie)
-				ctx.JSON(200, utils.ResponseGenerator("hei", true))
+				ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/dashboard", utils.GetString("CLIENT_ORIGIN")))
 			}
 		}
 	}
@@ -283,5 +283,35 @@ func VerifyUser() gin.HandlerFunc {
 		}
 		ctx.AbortWithStatusJSON(http.StatusOK, utils.ResponseGenerator("User Verified Successfullu", true))
 
+	}
+}
+
+func Logout() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		tokenCookie := &http.Cookie{
+			Name:     "token",
+			Path:     "/",
+			Value:    "",
+			Domain:   "localhost",
+			Expires:  time.Unix(0, 0),
+			MaxAge:   -1,
+			Secure:   false,
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+		}
+		refreshTokenCookie := &http.Cookie{
+			Name:     "refreshtoken",
+			Path:     "/",
+			Value:    "",
+			Domain:   "localhost",
+			Expires:  time.Unix(0, 0),
+			MaxAge:   -1,
+			Secure:   false,
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+		}
+		http.SetCookie(ctx.Writer, tokenCookie)
+		http.SetCookie(ctx.Writer, refreshTokenCookie)
+		ctx.JSON(http.StatusFound, utils.ResponseGenerator("Logged out", true))
 	}
 }

@@ -9,7 +9,6 @@ import (
 	"gihtub.com/heyyakash/switchr/internal/cache"
 	"gihtub.com/heyyakash/switchr/internal/db"
 	"gihtub.com/heyyakash/switchr/internal/routes"
-	"gihtub.com/heyyakash/switchr/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,13 +33,14 @@ func main() {
 	InitRedis()
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{utils.GetString("CLIENT_ORIGIN")},
-		AllowMethods:     []string{"PUT", "PATCH", "POST", "OPTIONS", "GET", "DELETE"},
-		AllowHeaders:     []string{"Origin", "auth-token", "content-type", "token"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{"PUT", "PATCH", "POST", "OPTIONS", "GET", "DELETE"},
+		// AllowHeaders:     []string{"Origin", "auth-token", "content-type", "token"},
+		AllowHeaders: []string{"*"},
+		// ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			return origin == utils.GetString("CLIENT_ORIGIN")
+			return origin == "http://localhost:3000"
 		},
 		MaxAge: 12 * time.Hour,
 	}))
