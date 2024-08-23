@@ -31,6 +31,16 @@ func CreateFlag() gin.HandlerFunc {
 			return
 		}
 		uid := ctx.MustGet("uid").(string)
+		userprojectmap, err := db.Store.GetUserProjectMapByUidAndPid(uid, req.Pid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+		if userprojectmap.Role == constants.Role["reader"] {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Not permitted", false))
+			return
+		}
 		flag := modals.Featureflag{
 			CreatedBy: uid,
 			Flag:      req.Flag,
