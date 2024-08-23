@@ -21,6 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { useRouter } from 'next/router'
 import GenerateTokenComp from './GenerateTokenComp'
+import Invite from './Invite'
 
 interface props {
     id :string
@@ -83,6 +84,7 @@ const Project: React.FC<props> = ({id}) => {
                 <h2 className='text-xl font-semibold'>{projectdata?.response.message.name}</h2>
                 <div className='flex items-center gap-3'>
                 <GenerateTokenComp id = {id} />
+                <Invite pid = {id} />
                 <Sheet>
                     <SheetTrigger><Button variant={"default"}>Create Flag</Button></SheetTrigger>
                     <SheetContent>
