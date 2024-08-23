@@ -7,6 +7,7 @@ import (
 )
 
 func AccountRouter(c *gin.Engine) {
+	c.GET("/roles/list", middleware.Authenticated(), handler.GetRolesList())
 	c.POST("/user/create", handler.CreateNewAccount())
 	c.POST("/user/login", handler.LoginUser())
 	c.POST("/user/magic", handler.SendMagicLink())

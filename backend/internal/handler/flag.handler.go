@@ -86,7 +86,7 @@ func DeleteFlag() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
 			return
 		}
-		if userprojectmap.Role == constants.Editor || userprojectmap.Role == constants.Owner {
+		if userprojectmap.Role == constants.Role["owner"] || userprojectmap.Role == constants.Role["editor"] {
 			if err := db.Store.DeleteFlagByFid(fid); err != nil {
 				log.Print(err)
 				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
@@ -137,7 +137,7 @@ func UpdateFlag() gin.HandlerFunc {
 			return
 		}
 
-		if userprojectmap.Role == constants.Editor || userprojectmap.Role == constants.Owner {
+		if userprojectmap.Role == constants.Role["owner"] || userprojectmap.Role == constants.Role["editor"] {
 			flag.Value = req.Value
 			if err := db.Store.UpdateFlag(&flag); err != nil {
 				log.Print(err)

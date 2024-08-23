@@ -11,6 +11,7 @@ type UserClaims struct {
 	Uid   string
 	Type  string
 	Email string
+	Role  int
 	Pid   string
 }
 
@@ -50,13 +51,30 @@ func GenerateJWT(uid string) (string, string, error) {
 }
 
 func GenerateJWTWithType(email string, _type string, expirationTime int64) (string, error) {
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
 		},
 		Email: email,
 		Type:  _type,
+	})
+
+	signedString, err := token.SignedString(sampleSecretKey)
+	if err != nil {
+		return "", err
+	}
+	return signedString, nil
+
+}
+func GenerateJWTWithTypeUidAndPid(uid string, pid string, role int, _type string, expirationTime int64) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
+		},
+		Uid:  uid,
+		Pid:  pid,
+		Type: _type,
+		Role: role,
 	})
 
 	signedString, err := token.SignedString(sampleSecretKey)

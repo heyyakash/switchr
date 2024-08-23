@@ -7,6 +7,7 @@ import (
 	"github.com/gin-contrib/cors"
 
 	"gihtub.com/heyyakash/switchr/internal/cache"
+	"gihtub.com/heyyakash/switchr/internal/constants"
 	"gihtub.com/heyyakash/switchr/internal/db"
 	"gihtub.com/heyyakash/switchr/internal/routes"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ import (
 
 func Init() {
 	db.Init()
+	constants.LoadRoleConstants()
 }
 
 func InitRedis() {
@@ -26,6 +28,7 @@ func InitRoutes(r *gin.Engine) {
 	routes.ProjectRoutes(r)
 	routes.FlagRoutes(r)
 	routes.ApiRoutes(r)
+	routes.ShareRoutes(r)
 }
 
 func main() {
@@ -35,9 +38,9 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:3000"},
 		AllowMethods: []string{"PUT", "PATCH", "POST", "OPTIONS", "GET", "DELETE"},
-		// AllowHeaders:     []string{"Origin", "auth-token", "content-type", "token"},
-		AllowHeaders: []string{"*"},
-		// ExposeHeaders:    []string{"Content-Length"},
+		AllowHeaders: []string{"Origin", "auth-token", "content-type", "token"},
+		// AllowHeaders: []string{"*"},
+		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
 			return origin == "http://localhost:3000"

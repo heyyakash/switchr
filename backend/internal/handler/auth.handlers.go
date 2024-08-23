@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"gihtub.com/heyyakash/switchr/internal/constants"
 	"gihtub.com/heyyakash/switchr/internal/db"
 	"gihtub.com/heyyakash/switchr/internal/modals"
 	"gihtub.com/heyyakash/switchr/internal/utils"
@@ -170,6 +171,7 @@ func LoginViaMagicLink() gin.HandlerFunc {
 		claims, valid, err := utils.DecodeJWT(token)
 		if err != nil {
 			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Expired", false))
 			return
 		}
 
@@ -208,8 +210,11 @@ func LoginViaMagicLink() gin.HandlerFunc {
 				http.SetCookie(ctx.Writer, tokenCookie)
 				http.SetCookie(ctx.Writer, refreshTokenCookie)
 				ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/dashboard", utils.GetString("CLIENT_ORIGIN")))
+				return
 			}
 		}
+		log.Print("Invalid")
+		ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Expired", false))
 	}
 }
 
@@ -313,5 +318,11 @@ func Logout() gin.HandlerFunc {
 		http.SetCookie(ctx.Writer, tokenCookie)
 		http.SetCookie(ctx.Writer, refreshTokenCookie)
 		ctx.JSON(http.StatusFound, utils.ResponseGenerator("Logged out", true))
+	}
+}
+
+func GetRolesList() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator(constants.Role, true))
 	}
 }

@@ -13,12 +13,11 @@ func (p *PostgresStore) CreateUserProjectMap(userprojectmap *modals.UserProjectM
 
 func (p *PostgresStore) GetUserProjectMapByUidAndPid(uid string, pid string) (modals.UserProjectMap, error) {
 	var userprojectmap modals.UserProjectMap
-	res := p.DB.Where("uid = ?", uid).Where("pid = ?", pid).First(&userprojectmap)
+	res := p.DB.Where("uid = ?", uid).Where("pid = ?::uuid", pid).Preload("Project").Preload("User").First(&userprojectmap)
 	if res.Error != nil {
 		return modals.UserProjectMap{}, res.Error
 	}
 	if res.RowsAffected == 0 {
-
 		return modals.UserProjectMap{}, errors.New("no matching record found")
 	}
 	return userprojectmap, nil

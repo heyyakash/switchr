@@ -30,9 +30,10 @@ func (p *PostgresStore) GetUserByUid(uid string) (modals.Users, error) {
 
 func (p *PostgresStore) GetUserByEmail(email string) (modals.Users, error) {
 	var user modals.Users
-	if result := p.DB.Select("*").Where("email = ?", email).First(&user); result.Error != nil {
+	if result := p.DB.Select("*").Where("email = ?", email).First(&user); result.Error != nil || result.RowsAffected == 0 {
 		return user, result.Error
 	}
+
 	return user, nil
 
 }
@@ -40,4 +41,13 @@ func (p *PostgresStore) GetUserByEmail(email string) (modals.Users, error) {
 func (p *PostgresStore) UpdateUser(user *modals.Users) error {
 	result := p.DB.Save(&user)
 	return result.Error
+}
+
+func (p *PostgresStore) EmailExists(email string) bool {
+	var user modals.Users
+	res := p.DB.Where("email = ?", email).First(&user)
+	if res.Error != nil || res.RowsAffected == 0 {
+		return false
+	}
+	return true
 }
