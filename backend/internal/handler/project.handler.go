@@ -140,6 +140,12 @@ func ShareProject() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Since the requested user doesn't have a switchr account we could'nt send them the invitation", false))
 			return
 		}
+		_, err = db.Store.GetUserProjectMapByUidAndPid(res.Uid, req.Pid)
+		if err == nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Requested user is already a part of the project", false))
+			return
+		}
 		jwt, err := utils.GenerateJWTWithTypeUidAndPid(res.Uid, req.Pid, req.Role, "share", time.Now().Add(5*time.Minute).Unix())
 		if err != nil {
 			log.Print(err)
