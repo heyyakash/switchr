@@ -48,8 +48,8 @@ const GenerateTokenComp: React.FC<props> = (props) => {
     }
     return (
         <Dialog open = {open } onOpenChange={setOpen}>
-            <DialogTrigger>
-                <Button>How to access?</Button>
+            <DialogTrigger className='w-full md:w-auto'>
+                <Button className='w-full md:w-auto'>How to access?</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

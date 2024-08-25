@@ -78,8 +78,8 @@ const Invite: React.FC<props> = ({ pid }) => {
 
     return (
         <Dialog>
-            <DialogTrigger>
-                <Button>Add Member</Button>
+            <DialogTrigger className='w-full md:w-auto'>
+                <Button className=' w-full md:w-auto'>Add Member</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

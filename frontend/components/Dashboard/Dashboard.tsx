@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
+import Loading from '../Loading/Loading'
 
 
 const formSchema = z.object({
@@ -63,7 +64,8 @@ const Dashboard = () => {
             return (await HTTPRequest("/userprojectmap", {}, "GET"))
         }
     })
-    console.log(data)
+    
+    if (isLoading) return <Loading />
     return (
         data &&
         <div>
@@ -92,7 +94,7 @@ const Dashboard = () => {
                 </Sheet>
             </div>
 
-            <div className='w-full grid gap-6 grid-cols-3 grid-rows-auto'>
+            <div className='w-full grid gap-6 grid-cols-1 grid-rows-auto md:grid-cols-3 lg:grid-rows-3 '>
                 {data && data.response.message.length>0 ? 
                 
                 data?.response?.message?.map((x:any,y:number)=>{

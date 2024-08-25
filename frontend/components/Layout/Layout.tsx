@@ -20,6 +20,7 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
+import Loading from '../Loading/Loading'
 
 interface props {
     children: ReactNode
@@ -60,6 +61,7 @@ const Layout: React.FC<props> = (props) => {
         }
     }
 
+    if(isLoading) return <Loading />
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
@@ -83,7 +85,7 @@ const Layout: React.FC<props> = (props) => {
                         <Link href="/dashboard" className="flex gap-2 items-center text-primary text-[1.2rem] font-medium ">
                             <Key size={"20px"} />
                         </Link>
-                        / <div className='text-md text-primary/50'>{data?.response?.message?.fullname}</div>
+                        / <Link href="/dashboard" className='text-md text-primary/50'>{data?.response?.message?.fullname}</Link>
                         {data?.response?.message?.verified ? (<></>) : (<Badge onClick={() => VerifyUser()} className='cursor-pointer' variant={"destructive"}>Unverified</Badge>)}
                     </div>
 
@@ -100,14 +102,13 @@ const Layout: React.FC<props> = (props) => {
                             <ModeToggle />
                             <Popover>
                                 <PopoverTrigger>
-                                    <Avatar>
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>CN</AvatarFallback>
-                                    </Avatar>
+                                    <div className='flex items-center justify-center h-10 w-10 rounded-full bg-primary text-secondary'>{data?.response?.message?.fullname?.split(" ").map((x:any)=>x[0])}</div>
                                 </PopoverTrigger>
                                 <PopoverContent className='mr-2 border-secondary flex flex-col gap-3'>
                                     <div className='w-full grid grid-cols-2 rounded-lg overflow-hidden grid-rows-1'>
-                                        <img src="https://github.com/shadcn.png" alt="" />
+                                        <div className='flex flex-col justify-center h-[150px] bg-secondary text-primary items-center'>
+                                            <h2 className='text-4xl '>{data?.response?.message?.fullname?.split(" ").map((x:any)=>x[0])}</h2>
+                                        </div>
                                         <div className='bg-primary flex flex-col justify-center dark:text-black items-center'>
                                             <h2 className='text-4xl '>{userprojectmap?.response?.message?.length}</h2>
                                             <p>Projects</p>
