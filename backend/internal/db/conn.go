@@ -50,7 +50,9 @@ func Init() {
 	var err error
 	dsn := fmt.Sprintf("host=%s user=%s password=%s port=%s sslmode=disable TimeZone=Asia/Kolkata", Host, User, Password, Port)
 	// start connection to db
-	Store.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	Store.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: false,
+	})
 	if err != nil {
 		log.Fatal("Couldn't connect to DB : ", err)
 	}

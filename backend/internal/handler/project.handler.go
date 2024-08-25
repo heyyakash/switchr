@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"gihtub.com/heyyakash/switchr/internal/cache"
@@ -97,14 +96,20 @@ func GetProject() gin.HandlerFunc {
 
 func DeleteProject() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		intid, err := strconv.Atoi(ctx.Param("id"))
-		id := uint(intid)
+		pid := string(ctx.Param("pid"))
+		uid := ctx.MustGet("uid").(string)
+		userprojetmap, err := db.Store.GetUserProjectMapByUidAndPid(uid, pid)
 		if err != nil {
 			log.Print(err)
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
+			ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("Not found", false))
 			return
 		}
-		if err := db.Store.DeleteProjectById(id); err != nil {
+		if userprojetmap.Role == constants.Role["reader"] || userprojetmap.Role == constants.Role["editor"] {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("You don't have authority to delete the project", false))
+			return
+		}
+		if err := db.Store.DeleteProjectByPid(pid); err != nil {
 			log.Print(err)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error occurred", false))
 			return

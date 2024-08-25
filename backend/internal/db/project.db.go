@@ -1,6 +1,9 @@
 package db
 
-import "gihtub.com/heyyakash/switchr/internal/modals"
+import (
+	"gihtub.com/heyyakash/switchr/internal/modals"
+	"gorm.io/gorm"
+)
 
 func (p *PostgresStore) CreateProject(project *modals.Projects) error {
 	result := p.DB.Create(&project)
@@ -33,8 +36,16 @@ func (p *PostgresStore) DeleteProjectById(id uint) error {
 	return res
 }
 func (p *PostgresStore) DeleteProjectByPid(pid string) error {
-	res := p.DB.Where("pid = ?", pid).Delete(&modals.Projects{}).Error
-	return res
+	return p.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("pid = ?", pid).Delete(&modals.UserProjectMap{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("pid = ?", pid).Delete(&modals.Projects{}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func (p *PostgresStore) GetProjectById(id uint) (modals.Projects, error) {

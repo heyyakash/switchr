@@ -9,4 +9,5 @@ import (
 func ProjectRoutes(c *gin.Engine) {
 	c.POST("/project/create", middleware.Authenticated(), middleware.IsVerified(), handler.CreateProject())
 	c.GET("/project/:pid", middleware.Authenticated(), handler.GetProject())
+	c.DELETE("/project/:pid", middleware.Authenticated(), handler.DeleteProject())
 }
