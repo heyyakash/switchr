@@ -20,7 +20,14 @@ interface ProjectName {
 }
 
 const Settings: React.FC<props> = ({ pid }) => {
+    const [deleting, setDeleting] = useState(false)
+    const [udpating, setUpdating] = useState(false)
+
+    const router = useRouter()
     const queryClient = useQueryClient()
+    const {handleSubmit, register } = useForm<ProjectName>()
+
+
     const { data, isError, isLoading } = useQuery({
         queryKey: [`project-${pid}`],
         queryFn: async () => {
@@ -28,15 +35,26 @@ const Settings: React.FC<props> = ({ pid }) => {
         },
     })
 
-    const {handleSubmit, register } = useForm<ProjectName>()
-
 
     const HandleProjectNameChange: SubmitHandler<ProjectName> =async (data) => {
-        console.log(data)
-    }
-    const router = useRouter()
+        setUpdating(true)
+        const payload = {
+            pid,
+            name : data.name
+        }
+        const res = await HTTPRequest("/project", {body:JSON.stringify(payload)}, "PATCH")
+        if(res?.response.success){
+            queryClient.invalidateQueries({
+                queryKey:[`project-${pid}`]
+            })
+            toast.success(res?.response.message)
 
-    const [deleting, setDeleting] = useState(false)
+        }else{
+            toast.error(res?.response.message)
+        }
+        setUpdating(false)
+    }
+
 
     const DeleteProject = async () => {
         setDeleting(true)
@@ -55,7 +73,6 @@ const Settings: React.FC<props> = ({ pid }) => {
     }
 
 
-    const [editBoxOpen , setEditBoxOpen] = useState(false)
     if (isLoading) return <Loading />
     if (isError) return <div>Error Occuered</div>
     return (
@@ -70,7 +87,9 @@ const Settings: React.FC<props> = ({ pid }) => {
                 <form onSubmit={handleSubmit(HandleProjectNameChange)} className='flex flex-col gap-3 items-start'>
                     <Label>Name</Label>
                     <Input type = "text" {...register("name")} placeholder= {data?.response.message?.name} className='max-w-[500px] w-full' />
-                    <Button >Update</Button>
+                    <Button disabled = {udpating}>
+                    {udpating? <RotateCw className='animate-spin' />: "Update Project"}
+                </Button>
                 </form>
             </div>
             
