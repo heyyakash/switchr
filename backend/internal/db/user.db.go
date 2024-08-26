@@ -1,6 +1,9 @@
 package db
 
-import "gihtub.com/heyyakash/switchr/internal/modals"
+import (
+	"gihtub.com/heyyakash/switchr/internal/modals"
+	"gorm.io/gorm"
+)
 
 func (p *PostgresStore) CreateAccount(user *modals.Users) error {
 	user.Verified = false
@@ -39,8 +42,12 @@ func (p *PostgresStore) GetUserByEmail(email string) (modals.Users, error) {
 }
 
 func (p *PostgresStore) UpdateUser(user *modals.Users) error {
-	result := p.DB.Save(&user)
-	return result.Error
+	return p.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Save(user).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 func (p *PostgresStore) EmailExists(email string) bool {

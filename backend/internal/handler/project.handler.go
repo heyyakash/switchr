@@ -205,3 +205,31 @@ func ConfirmShareProject() gin.HandlerFunc {
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator("User Added", true))
 	}
 }
+
+func UpdateProject() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req modals.Projects
+		uid := ctx.MustGet("uid").(string)
+		if err := ctx.BindJSON(&req); err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
+			return
+		}
+		userprojectmap, err := db.Store.GetUserProjectMapByUidAndPid(uid, req.Pid)
+		if err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("Not found", false))
+			return
+		}
+		if userprojectmap.Role != constants.Role["owner"] {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("You don't have the authority to update the project", false))
+			return
+		}
+		if err := db.Store.UpdateProjectWithStruct(&req); err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Details updated successfully", true))
+	}
+}
