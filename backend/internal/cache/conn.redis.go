@@ -48,10 +48,14 @@ func (r *RedisClient) Set(key string, value interface{}) error {
 	return err
 }
 
-func (r *RedisClient) Get(key string) (string, error) {
+func (r *RedisClient) Get(key string) (interface{}, error) {
 	ctx := context.Background()
 	val, err := r.rdb.Get(ctx, key).Result()
-	return val, err
+	var validJson interface{}
+	if err := json.Unmarshal([]byte(val), &validJson); err != nil {
+		return "", err
+	}
+	return validJson, err
 }
 
 func (r *RedisClient) Del(key string) {

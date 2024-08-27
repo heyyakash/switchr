@@ -15,8 +15,7 @@ import (
 func CreateToken() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		pid := string(ctx.Param("pid"))
-		// uid := ctx.MustGet("uid").(string)
-		uid := "6bb9c676-0e49-4d28-a5f9-21f162849c4d"
+		uid := ctx.MustGet("uid").(string)
 		_, err := db.Store.GetUserProjectMapByUidAndPid(uid, pid)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Forbidden", false))
@@ -36,6 +35,7 @@ func GetFlagFromAPI() gin.HandlerFunc {
 		pid := ctx.MustGet("pid").(string)
 		key := string(ctx.Param("key"))
 		res, err := cache.Redisdb.Get(fmt.Sprintf("PID-%s-FLAG-%s", pid, key))
+		log.Print("Redis ", res)
 		if err != nil {
 			val, err := db.Store.GetFlagByNameAndPid(key, pid)
 			if err != nil {

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"gihtub.com/heyyakash/switchr/internal/cache"
 	"gihtub.com/heyyakash/switchr/internal/constants"
 	"gihtub.com/heyyakash/switchr/internal/db"
 	"gihtub.com/heyyakash/switchr/internal/modals"
@@ -315,7 +316,14 @@ func Logout() gin.HandlerFunc {
 
 func GetRolesList() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, utils.ResponseGenerator(constants.Role, true))
+		val, err := cache.Redisdb.Get("roles")
+		if err != nil {
+			_ = cache.Redisdb.Set("roles", constants.Role)
+			ctx.JSON(http.StatusOK, utils.ResponseGenerator(constants.Role, true))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator(val, true))
+
 	}
 }
 

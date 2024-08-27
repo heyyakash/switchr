@@ -41,6 +41,12 @@ func CreateFlag() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Not permitted", false))
 			return
 		}
+		_, err = db.Store.GetFlagByNameAndPid(req.Flag, req.Pid)
+		if err == nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Flag with the same name already exists", false))
+			return
+		}
+
 		flag := modals.Featureflag{
 			CreatedBy: uid,
 			Flag:      req.Flag,
