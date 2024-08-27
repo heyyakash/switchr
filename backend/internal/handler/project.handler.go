@@ -225,7 +225,7 @@ func UpdateProject() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("You don't have the authority to update the project", false))
 			return
 		}
-		if err := db.Store.UpdateProjectWithStruct(&req); err != nil {
+		if err := db.Store.UpdateProjectWithPid(&req, userprojectmap.Pid); err != nil {
 			log.Print(err)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
 			return

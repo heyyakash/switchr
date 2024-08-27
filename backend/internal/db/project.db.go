@@ -66,9 +66,9 @@ func (p *PostgresStore) GetFlagByPid(pid string) ([]modals.FeatureflagWithUserNa
 	return flags, res.Error
 }
 
-func (p *PostgresStore) UpdateProjectWithStruct(project *modals.Projects) error {
+func (p *PostgresStore) UpdateProjectWithPid(project *modals.Projects, pid string) error {
 	return p.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Save(project).Error; err != nil {
+		if err := tx.Model(modals.Projects{}).Where("pid = ?", pid).Updates(project).Error; err != nil {
 			return err
 		}
 		return nil

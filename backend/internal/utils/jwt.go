@@ -66,6 +66,22 @@ func GenerateJWTWithType(email string, _type string, expirationTime int64) (stri
 	return signedString, nil
 
 }
+func GenerateJWTWithTypeAndUID(uid string, _type string, expirationTime int64) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Unix(expirationTime, 0)),
+		},
+		Uid:  uid,
+		Type: _type,
+	})
+
+	signedString, err := token.SignedString(sampleSecretKey)
+	if err != nil {
+		return "", err
+	}
+	return signedString, nil
+
+}
 func GenerateJWTWithTypeUidAndPid(uid string, pid string, role int, _type string, expirationTime int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
 		RegisteredClaims: jwt.RegisteredClaims{

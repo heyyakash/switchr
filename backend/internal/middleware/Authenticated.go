@@ -87,6 +87,10 @@ func Authenticated() gin.HandlerFunc {
 			log.Print(err)
 			return
 		}
+		if claims.Type != "auth" {
+			ctx.AbortWithStatusJSON(http.StatusFound, utils.ResponseGenerator("Wrong token", false))
+			return
+		}
 		if !valid {
 			refreshtoken, err := ctx.Cookie("refreshtoken")
 			if err != nil || len(refreshtoken) == 0 {

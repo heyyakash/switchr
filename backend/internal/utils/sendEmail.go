@@ -15,6 +15,7 @@ var (
 
 func SendEmail(mail *modals.Email) error {
 	auth := smtp.PlainAuth("", smtpEmail, smtpPass, smtpHost)
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, smtpEmail, []string{mail.To}, []byte(mail.Content))
+	message := []byte(mail.Subject + "\r\n" + mail.Content)
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, smtpEmail, []string{mail.To}, []byte(message))
 	return err
 }

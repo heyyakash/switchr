@@ -16,4 +16,9 @@ func AccountRouter(c *gin.Engine) {
 	c.POST("/user/verify", middleware.Authenticated(), handler.SendVerificationMail())
 	c.GET("/user", middleware.Authenticated(), handler.GetUserByToken())
 	c.POST("/user/logout", middleware.Authenticated(), handler.Logout())
+	c.PATCH("/user", middleware.Authenticated(), handler.UpdateUser())
+	c.PATCH("/user/password", middleware.Authenticated(), handler.ChangePassword())
+	c.POST("/user/forgot", handler.SendForgotPasswordLink())
+	c.GET("/changepass/:token", handler.RedirectToChangePassword())
+	c.POST("/user/changepass", middleware.VerifyForgotPasswordToken(), handler.ChangeForgotPassword())
 }

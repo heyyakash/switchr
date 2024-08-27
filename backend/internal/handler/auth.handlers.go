@@ -218,14 +218,6 @@ func LoginViaMagicLink() gin.HandlerFunc {
 	}
 }
 
-func DeleteUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {}
-}
-
-func UpdateUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {}
-}
-
 func SendVerificationMail() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		uid := ctx.MustGet("uid").(string)
@@ -281,7 +273,7 @@ func VerifyUser() gin.HandlerFunc {
 			return
 		}
 		user.Verified = true
-		if err := db.Store.UpdateUser(&user); err != nil {
+		if err := db.Store.UpdateUser(&user, user.Uid); err != nil {
 			log.Print(err)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Some Error Occured", false))
 			return
@@ -324,5 +316,189 @@ func Logout() gin.HandlerFunc {
 func GetRolesList() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator(constants.Role, true))
+	}
+}
+
+func DeleteUser() gin.HandlerFunc {
+	return func(ctx *gin.Context) {}
+}
+
+func UpdateUser() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		type updateUserStruct struct {
+			FullName string `json:"fullname"`
+			Uid      string `json:"uid"`
+		}
+		var req updateUserStruct
+		if err := ctx.BindJSON(&req); err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
+			return
+		}
+		uid := ctx.MustGet("uid").(string)
+		if uid != req.Uid {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Forbidden", false))
+			return
+		}
+		if err := db.Store.UpdateUser(&modals.Users{FullName: req.FullName, Uid: req.Uid}, req.Uid); err != nil {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occured", false))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Updated Successfully", true))
+
+	}
+}
+func ChangePassword() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		type ChangePasswordStruct struct {
+			Current string `json:"current"`
+			New     string `json:"new"`
+		}
+		var req ChangePasswordStruct
+		if err := ctx.BindJSON(&req); err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
+			return
+		}
+		uid := ctx.MustGet("uid").(string)
+		user, err := db.Store.GetUserByUidWithPassword(uid)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("User Not found", false))
+			return
+		}
+
+		if checkPass := utils.CheckPassword(user.Password, req.Current); !checkPass {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Entered current password is wrong", false))
+			return
+		}
+
+		if checkNewHash := utils.CheckPassword(user.Password, req.New); checkNewHash {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("New and current password cannot be same", false))
+			return
+		}
+		user.Password = utils.Hash(req.New)
+
+		if err := db.Store.UpdateUser(&user, user.Uid); err != nil {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occured", false))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Updated Successfully", true))
+
+	}
+}
+
+func SendForgotPasswordLink() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		type ForgotPasswordReq struct {
+			Email string `json:"email"`
+		}
+		var req ForgotPasswordReq
+		if err := ctx.BindJSON(&req); err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
+			return
+		}
+
+		user, err := db.Store.GetUserByEmail(req.Email)
+		if err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Account does not exists", false))
+			return
+		}
+		jwt, err := utils.GenerateJWTWithTypeAndUID(user.Uid, "forgot-password", time.Now().Add(5*time.Minute).Unix())
+		if err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error occured", false))
+			return
+		}
+		log.Print("Token : ", jwt)
+		email := modals.Email{
+			To:      req.Email,
+			Content: fmt.Sprintf("Heyy %s, Your link to reset your switchr account password is \n%s/changepass/%s \nThe link is active for 5 minutes only", user.FullName, utils.GetString("HOST"), jwt),
+			Subject: "Change Switchr Account Password",
+		}
+		if err := utils.SendEmail(&email); err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error occured", false))
+			return
+		}
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Kindly check your email for the reset password link", true))
+	}
+}
+
+func RedirectToChangePassword() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		token := string(ctx.Param("token"))
+		claims, valid, err := utils.DecodeJWT(token)
+		if err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
+			return
+		}
+		if !valid {
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Sorry, the link has expired", false))
+			return
+		}
+		if claims.Type != "forgot-password" {
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
+			return
+		}
+		tokenCookie := &http.Cookie{
+			Name:     "token",
+			Path:     "/",
+			Value:    token,
+			Domain:   "localhost",
+			Expires:  time.Now().Add(5 * time.Minute),
+			Secure:   false,
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+		}
+		http.SetCookie(ctx.Writer, tokenCookie)
+		ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/changepassword", utils.GetString("CLIENT_ORIGIN")))
+	}
+}
+
+func ChangeForgotPassword() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		type ChangePasswordReq struct {
+			New string `json:"new"`
+		}
+		var req ChangePasswordReq
+		if err := ctx.BindJSON(&req); err != nil {
+			log.Print(err)
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
+			return
+		}
+
+		uid := ctx.MustGet("uid").(string)
+		user, err := db.Store.GetUserByUidWithPassword(uid)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("User Not found", false))
+			return
+		}
+
+		if checkNewHash := utils.CheckPassword(user.Password, req.New); checkNewHash {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("New and current password cannot be same", false))
+			return
+		}
+		user.Password = utils.Hash(req.New)
+
+		if err := db.Store.UpdateUser(&user, user.Uid); err != nil {
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occured", false))
+			return
+		}
+		tokenCookie := &http.Cookie{
+			Name:     "token",
+			Path:     "/",
+			Value:    "",
+			Domain:   "localhost",
+			Expires:  time.Unix(0, 0),
+			MaxAge:   -1,
+			Secure:   false,
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+		}
+		http.SetCookie(ctx.Writer, tokenCookie)
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Updated Successfully", true))
 	}
 }

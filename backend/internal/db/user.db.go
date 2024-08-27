@@ -28,7 +28,13 @@ func (p *PostgresStore) GetUserByUid(uid string) (modals.Users, error) {
 		return user, result.Error
 	}
 	return user, nil
-
+}
+func (p *PostgresStore) GetUserByUidWithPassword(uid string) (modals.Users, error) {
+	var user modals.Users
+	if result := p.DB.Where("uid = ?", uid).First(&user); result.Error != nil {
+		return user, result.Error
+	}
+	return user, nil
 }
 
 func (p *PostgresStore) GetUserByEmail(email string) (modals.Users, error) {
@@ -41,9 +47,9 @@ func (p *PostgresStore) GetUserByEmail(email string) (modals.Users, error) {
 
 }
 
-func (p *PostgresStore) UpdateUser(user *modals.Users) error {
+func (p *PostgresStore) UpdateUser(user *modals.Users, uid string) error {
 	return p.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Save(user).Error; err != nil {
+		if err := tx.Model(modals.Users{}).Where("uid = ?", uid).Updates(user).Error; err != nil {
 			return err
 		}
 		return nil
