@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
@@ -37,6 +37,7 @@ interface props {
 }
 
 const ProjectNav: React.FC<props> = ({ id }) => {
+    const [open,setOpen] = useState<boolean>(false)
     const queryClient = useQueryClient()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -60,7 +61,8 @@ const ProjectNav: React.FC<props> = ({ id }) => {
         } else {
             toast.error(res?.response.message)
         }
-
+        form.reset()
+        setOpen(false)
     }
 
 
@@ -68,7 +70,7 @@ const ProjectNav: React.FC<props> = ({ id }) => {
         <div className='flex md:flex-row flex-col gap-2 items-center '>
             <GenerateTokenComp id={id} />
             <Invite pid={id} />
-            <Sheet>
+            <Sheet open = {open} onOpenChange={setOpen}>
                 <SheetTrigger className='w-full md:w-auto'><Button className='w-full md:w-auto' variant={"default"}>Create Flag</Button></SheetTrigger>
                 <SheetContent>
                     <SheetHeader className='flex flex-col gap-5'>

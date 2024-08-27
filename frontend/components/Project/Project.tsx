@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import TableComponent, { FlagRowInterface } from './Table'
 
@@ -32,6 +32,7 @@ interface props {
 }
 
 const Project: React.FC<props> = ({ id }) => {
+    const [open, setOpen] = useState<boolean>(false)
 
     const { data, error, isLoading } = useQuery({
         queryKey: ["flags"],
@@ -59,7 +60,7 @@ const Project: React.FC<props> = ({ id }) => {
                     <ProjectNav id={id} />
                 </div>
                 <div className='md:hidden flex flex-col items-center gap-3'>
-                    <Sheet>
+                    <Sheet open = {open} onOpenChange={setOpen}>
                         <SheetTrigger><Menu /></SheetTrigger>
                         <SheetContent>
                             <SheetHeader>
