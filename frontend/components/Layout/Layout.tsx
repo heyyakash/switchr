@@ -26,10 +26,11 @@ interface props {
     children: ReactNode
 }
 
+const getUser = async () => {
+    return (await HTTPRequest("/user", {}, "GET"))
+}
+
 const Layout: React.FC<props> = (props) => {
-    const getUser = async () => {
-        return (await HTTPRequest("/user", {}, "GET"))
-    }
     const [open, setOpen] = useState(false)
     const [emailSent, setEmailSent] = useState(false)
     const { data, error, isLoading } = useQuery({ queryKey: ["user"], queryFn: getUser })
@@ -114,7 +115,7 @@ const Layout: React.FC<props> = (props) => {
                                             <p>Projects</p>
                                         </div>
                                     </div>
-                                    <Button variant={"secondary"} size={"lg"} className='w-full'>Settings</Button>
+                                    <Link href = "/user"><Button variant={"secondary"} size={"lg"} className='w-full'>Settings</Button></Link>
                                     <Button onClick={() => logout()} variant={"destructive"} size={"lg"} className='w-full bg-red-500'>Logout</Button>
                                 </PopoverContent>
                             </Popover>

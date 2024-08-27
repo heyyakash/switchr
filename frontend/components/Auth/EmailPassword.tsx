@@ -17,6 +17,7 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HTTPRequest } from '@/api/api'
+import Link from 'next/link'
 
 const formSchema = z.object({
     email: z.string().min(2, {
@@ -85,6 +86,7 @@ const EmailPassword = () => {
             )}
         />
         <Button type="submit" size={"lg"} className="mt-6 text-lg w-full" variant={"default"}>Login</Button>
+        <Link href = "/forgotpassword" className='mt-2 cursor-pointer'>Forgot Password ?</Link>
     </form>
 </Form>
   )
