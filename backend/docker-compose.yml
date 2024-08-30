@@ -1,0 +1,47 @@
+services:
+  redis:
+    container_name: some-redis
+    image: redis
+    command: redis-server --maxmemory 250mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+
+  postgres:
+    container_name: pg-image
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  switchr:
+    container_name: switchr
+    image: switchr
+    build: .
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      REDIS_HOST: ${REDIS_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      SMTP_EMAIL: ${SMTP_EMAIL}
+      SMTP_PASSWORD: ${SMTP_PASSWORD} 
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      HOST: ${HOST}
+      SECRET_KEY: ${SECRET_KEY}
+      DOMAIN: ${DOMAIN}
+      SECURE_COOKIE: ${SECURE_COOKIE}
+    ports:
+      - "8020:8020"
+    depends_on: 
+      - postgres
+      - redis
+  
+volumes:
+  postgres_data:

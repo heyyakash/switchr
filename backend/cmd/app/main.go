@@ -10,6 +10,7 @@ import (
 	"gihtub.com/heyyakash/switchr/internal/constants"
 	"gihtub.com/heyyakash/switchr/internal/db"
 	"gihtub.com/heyyakash/switchr/internal/routes"
+	"gihtub.com/heyyakash/switchr/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,14 +37,14 @@ func main() {
 	InitRedis()
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:3000"},
+		AllowOrigins: []string{utils.GetString("CLIENT_ORIGIN")},
 		AllowMethods: []string{"PUT", "PATCH", "POST", "OPTIONS", "GET", "DELETE"},
 		AllowHeaders: []string{"Origin", "auth-token", "content-type", "token"},
 		// AllowHeaders: []string{"*"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			return origin == "http://localhost:3000"
+			return origin == utils.GetString("CLIENT_ORIGIN")
 		},
 		MaxAge: 12 * time.Hour,
 	}))
@@ -59,5 +60,9 @@ func main() {
 	InitRoutes(r)
 
 	//starting server
-	r.Run(":8020")
+	if utils.GetString("ENV") == "prod" {
+		r.RunTLS(":8020", "localhost.pem", "localhost-key-nopass.pem")
+	} else {
+		r.Run(":8020")
+	}
 }

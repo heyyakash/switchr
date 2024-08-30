@@ -3,8 +3,10 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 
+	"gihtub.com/heyyakash/switchr/internal/utils"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -16,7 +18,7 @@ var Redisdb RedisClient
 
 func (r *RedisClient) ConnectRedis() {
 	r.rdb = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     fmt.Sprintf("%s:6379", utils.GetString("REDIS_HOST")),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
