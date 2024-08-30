@@ -1,16 +1,8 @@
 import React, { useState } from 'react'
 
-import TableComponent, { FlagRowInterface } from './Table'
-
-
-
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import TableComponent from './Table'
+import { useQuery} from '@tanstack/react-query'
 import { HTTPRequest } from '@/api/api'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
-
 import Loading from '../Loading/Loading'
 import ProjectNav from '../nav/ProjectNav'
 import {
@@ -35,17 +27,19 @@ const Project: React.FC<props> = ({ id }) => {
     const [open, setOpen] = useState<boolean>(false)
 
     const { data, error, isLoading } = useQuery({
-        queryKey: ["flags"],
+        queryKey: ["flags",id],
         queryFn: async () => {
             return (await HTTPRequest(`/flags/pid/${id}`, {}, "GET"))
-        }
+        },
+        refetchOnMount:true
     })
 
     const { data: projectdata, error: projectdataerror, isLoading: projectdataloading } = useQuery({
-        queryKey: [`project-${id}`],
+        queryKey: [`project-${id}`,id],
         queryFn: async () => {
             return (await HTTPRequest(`/project/${id}`, {}, "GET"))
         },
+        refetchOnMount:true
     })
 
 

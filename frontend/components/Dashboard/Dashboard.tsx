@@ -22,18 +22,14 @@ import Loading from '../Loading/Loading'
 
 
 const formSchema = z.object({
-    name: z.string().min(8, {
+    name: z.string().min(1, {
         message: "Length of name should be greater than 8"
     }),
 })
 
 
 const Dashboard = () => {
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-      setIsClient(true);
-    }, []);
+    const [open, setOpen] = useState(false)
     const queryClient = useQueryClient()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -53,6 +49,7 @@ const Dashboard = () => {
             queryClient.invalidateQueries({
                 queryKey:["projects"]
             })
+            setOpen(false)
         } else {
             toast.error(res?.response.message)
         }
@@ -72,7 +69,7 @@ const Dashboard = () => {
             <div className='flex items-center justify-between mb-5'>
                 <h2 className='text-xl font-semibold'>Your Projects</h2>
 
-                <Sheet>
+                <Sheet open = {open} onOpenChange={setOpen}>
                     <SheetTrigger><Button>Create New</Button></SheetTrigger>
                     <SheetContent>
                         <SheetHeader className='flex flex-col gap-5'>

@@ -49,7 +49,7 @@ const GenerateTokenComp: React.FC<props> = (props) => {
     return (
         <Dialog open = {open } onOpenChange={setOpen}>
             <DialogTrigger className='w-full md:w-auto'>
-                <Button className='w-full md:w-auto'>How to access?</Button>
+                <Button className='w-full md:w-auto'>API</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -65,7 +65,7 @@ const GenerateTokenComp: React.FC<props> = (props) => {
                         <p>Example</p>
                         <textarea value={
                             `curl  -X GET \
-      'http://localhost:8020/api/get/CREATE_FLAG'
+      '${process.env.NEXT_PUBLIC_BASE_URL}api/get/CREATE_FLAG'
       --header 'token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzQ2ODA1OTksIlVpZCI6IiIsIlR5cGUiOiJhcGktdG9rZW4iLCJFbWFpbCI6IiIsIlBpZCI6IjcwNDhkMzE0LTUwNzQtNDBhZi05YTgxLWI1MjA5MmIwMmNkMCJ9.5at5eYJwbolz4M1eIS5GfT6RzHUw4xZzZ5t52z6FkB4'`
                         } className='p-2 bg-secondary h-[250px] rounded-lg w-full overflow-auto whitespace-pre-wrap'>
 

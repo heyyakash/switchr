@@ -24,15 +24,15 @@ export interface ProjectCardInterface {
 const ProjectCard: React.FC<ProjectCardInterface> = (props) => {
   return (
     <div className='relative overflow-hidden w-full '>
-      <Card className='relative bg-transparent z-[1]'>
+      <Card className='relative min-h-[270px] bg-transparent z-[1]'>
         <CardHeader>
           <CardTitle>{props.name}</CardTitle>
           <CardDescription className='pt-2 flex items-center justify-between'>{props.owned?(<Badge>Owned</Badge>):(<Badge variant={"secondary"}>Shared</Badge>)} <Badge className='ml-auto' variant={"outline"}>{props.createdAt}</Badge></CardDescription>
         </CardHeader>
         <CardContent>
-          <p>{props.flags} Flags <Flag></Flag></p>
+          {/* <p>{props.flags} Flags <Flag></Flag></p> */}
         </CardContent>
-        <CardFooter className='w-full'>
+        <CardFooter className='w-full absolute bottom-0 '>
           <Link href={`/project/${props.link}`}>
           <Button variant={"default"} className='w-full'>Open <ArrowUpRight /></Button>
           </Link>
