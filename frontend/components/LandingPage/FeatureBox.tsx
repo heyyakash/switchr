@@ -11,8 +11,8 @@ const FeatureBox: React.FC<props> = ({ serial, heading, desc, setMainBg }) => {
 
     const bg_list = {
         0: "from-yellow-300 to-green-400",
-        1: "from-pink-500 to-rose-500",
-        2: "from-cyan-400 to-blue-600",
+        1: "from-pink-400 to-rose-400",
+        2: "from-cyan-200 to-blue-200",
         3: "from-violet-200 to-pink-200",
     }
     const [headingColor, setHeadingColor] = useState("bg-primary")
