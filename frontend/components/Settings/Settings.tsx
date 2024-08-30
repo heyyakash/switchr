@@ -104,7 +104,7 @@ const Settings: React.FC<props> = ({ pid }) => {
             <div className='mt-6'>
                 <h3 className='text-xl'>Delete Project</h3>
                 <hr className='my-3' />
-                <p className='text-primary/70 mb-3'>Once you've deleted your project you and its members cannot access it again. This action can only be taken by the owner(s) of the project.</p>
+                <p className='text-primary/70 mb-3'>Once you&apos;ve deleted your project you and its members cannot access it again. This action can only be taken by the owner(s) of the project.</p>
                 <Button onClick={()=>DeleteProject()} disabled = {deleting} variant={"destructive"}>
                     {deleting? <RotateCw className='animate-spin' />: "Delete Project"}
                 </Button>

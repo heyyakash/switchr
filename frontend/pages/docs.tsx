@@ -20,8 +20,8 @@ const Docs = () => {
                 </div>
                 <b>Example Request</b>
                 <div className='p-3 bg-secondary/50 rounded-lg'>
-                curl -X GET '{process.env.NEXT_PUBLIC_BASE_URL}/api/get/FLAG_NAME'
-                --header 'token: &lt;YOUR_TOKEN / KEY&gt;';
+                curl -X GET &apos;{process.env.NEXT_PUBLIC_BASE_URL}/api/get/FLAG_NAME&apos;
+                --header &apos;token: &lt;YOUR_TOKEN / KEY&gt;&apos;;
                 </div>
             </div>
         </div> 

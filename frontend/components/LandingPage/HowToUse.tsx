@@ -34,7 +34,7 @@ const Steps = ()=> {
         <div className='grid my-[4rem] gap-6 grid-cols-1 backdrop-blur-md lg:grid-cols-2 xl:grid-cols-4'>
             {steps.map((step, index)=>{
                 return(
-                    <div className='p-6 h-[350px] relative cursor-pointer hover:bg-primary/10 trans  bg-secondary/30 rounded-lg flex items-center justify-center flex-col gap-3'>
+                    <div key= {index} className='p-6 h-[350px] relative cursor-pointer hover:bg-primary/10 trans  bg-secondary/30 rounded-lg flex items-center justify-center flex-col gap-3'>
                         <div className='absolute text-[20rem] text-primary/10 z-0  right-0'>{index+1}</div>
                         <span className='text-3xl '>Step <b>{index+1}.</b></span>
                         <p className='text-center'>

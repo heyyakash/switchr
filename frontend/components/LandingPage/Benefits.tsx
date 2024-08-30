@@ -31,7 +31,7 @@ const Benefits = () => {
                 <h2 className='text-2xl font-semibold'>
                 Scale Effortlessly
                 </h2>
-                <p className='text-primary/70'>Switchr's Redis-backed architecture ensures fast and reliable performance, no matter the scale</p>
+                <p className='text-primary/70'>Switchr&apos;s Redis-backed architecture ensures fast and reliable performance, no matter the scale</p>
             </div>
             <div className='bg-secondary/30 p-6 rounded-lg flex flex-col  gap-3 hover:bg-primary/10 trans cursor-pointer'>
                 <Flag size={60} className="text-orange-300" />

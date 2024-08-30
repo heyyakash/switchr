@@ -66,7 +66,7 @@ const User = () => {
     if (isLoading) return <Loading />
     return (
         <div>
-            <h2 className='text-2xl '>{data?.response.message?.fullname || "User's"}'s Settings</h2>
+            <h2 className='text-2xl '>{data?.response.message?.fullname || "User"}&apos;s Settings</h2>
             <div className='mt-12'>
                 <h3 className='text-xl'>Edit User Details</h3>
                 <hr className='my-3' />
