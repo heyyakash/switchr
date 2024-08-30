@@ -58,8 +58,9 @@ const Project: React.FC<props> = ({ id }) => {
                 <h2 className='text-xl font-semibold'>{projectdata?.response.message.name}</h2>
                 <div className='hidden md:flex items-center gap-3'>
                     <ProjectNav id={id} />
+                    <Link href = {`/settings/${id}`}><Button variant={"secondary"} ><Settings /></Button></Link>
                 </div>
-                <div className='md:hidden flex flex-col items-center gap-3'>
+                <div className='md:hidden flex  items-center gap-3'>
                     <Sheet open = {open} onOpenChange={setOpen}>
                         <SheetTrigger><Menu /></SheetTrigger>
                         <SheetContent>
@@ -72,7 +73,7 @@ const Project: React.FC<props> = ({ id }) => {
                         </SheetContent>
                     </Sheet>
                 </div>
-                <Link href = {`/settings/${id}`}><Button variant={"secondary"} ><Settings /></Button></Link>
+                
 
             </div>
             <TableComponent list={data?.response.message} />

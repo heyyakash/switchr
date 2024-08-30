@@ -69,3 +69,9 @@
     @apply bg-background text-foreground font-inter;
   }
 }
+
+@layer utilities{
+  .trans {
+    @apply transition-all duration-200;
+  }
+}

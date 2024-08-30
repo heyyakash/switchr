@@ -71,7 +71,7 @@ const ProjectNav: React.FC<props> = ({ id }) => {
             <GenerateTokenComp id={id} />
             <Invite pid={id} />
             <Sheet open = {open} onOpenChange={setOpen}>
-                <SheetTrigger className='w-full md:w-auto'><Button className='w-full md:w-auto' variant={"default"}>Create Flag</Button></SheetTrigger>
+                <SheetTrigger className='w-full md:w-auto'><Button className='w-full md:w-auto' variant={"secondary"}>Create Flag</Button></SheetTrigger>
                 <SheetContent>
                     <SheetHeader className='flex flex-col gap-5'>
                         <SheetTitle className='flex gap-2 text-xl items-center'> <Flag />Create a new Flag</SheetTitle>

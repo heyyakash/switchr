@@ -10,6 +10,7 @@ const config = {
 	],
   prefix: "",
   theme: {
+
     container: {
       center: true,
       padding: "2rem",
@@ -52,6 +53,10 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        backgroundImage: {
+          'star-light-bg': "url('/public/main-bg-light.png')",
+          'star-dark-bg': "url('/public/main-bg-dark.png')",
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
