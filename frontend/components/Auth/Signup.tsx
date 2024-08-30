@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from 'sonner'
 import { HTTPRequest } from '@/api/api'
+import { useRouter } from 'next/router'
 
 const SignUp = () => {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -37,7 +38,7 @@ const SignUp = () => {
             password: ""
         },
     })
-
+    const router = useRouter()
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const payload = {
             email:values.email,
@@ -48,13 +49,14 @@ const SignUp = () => {
             body: JSON.stringify(payload)
         },"POST")
         
-        if(res.response.success){
+        if(res?.response.success){
             toast.success("You have signed up successfully!!")
             form.reset({
                 fullname:"",
                 email:"",
                 password:""
             })
+            router.push('/dashboard')
         }else{
             toast.error("Sign Up failed")
         }
