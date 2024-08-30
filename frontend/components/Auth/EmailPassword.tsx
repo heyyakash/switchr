@@ -54,7 +54,7 @@ const EmailPassword = () => {
 
   return (
     <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className=" w-[90%] md:w-[450px]">
+    <form onSubmit={form.handleSubmit(onSubmit)} className=" w-[90%] mx-auto md:w-[450px]">
         <div className="my-6">
             <h3 className=" text-2xl font-bold text-center">Login to your account</h3>
             <p className="text-md text-white/50 text-center mt-3">Enter your email and password to Login</p>
@@ -86,7 +86,7 @@ const EmailPassword = () => {
             )}
         />
         <Button type="submit" size={"lg"} className="mt-6 text-lg w-full" variant={"default"}>Login</Button>
-        <Link href = "/forgotpassword" className='mt-2 cursor-pointer'>Forgot Password ?</Link>
+        <Link href = "/forgotpassword" className='mt-4 cursor-pointer'>Forgot Password ?</Link>
     </form>
 </Form>
   )
