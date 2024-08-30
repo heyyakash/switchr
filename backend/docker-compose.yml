@@ -37,6 +37,8 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       DOMAIN: ${DOMAIN}
       SECURE_COOKIE: ${SECURE_COOKIE}
+      CERTIFICATE: ${CERTIFICATE}
+      KEY: ${KEY}
     ports:
       - "8020:8020"
     depends_on: 

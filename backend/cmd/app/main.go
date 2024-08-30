@@ -61,7 +61,7 @@ func main() {
 
 	//starting server
 	if utils.GetString("ENV") == "prod" {
-		r.RunTLS(":8020", "localhost.pem", "localhost-key-nopass.pem")
+		r.RunTLS(":8020", utils.GetString("CERTIFICATE"), utils.GetString("KEY"))
 	} else {
 		r.Run(":8020")
 	}
