@@ -113,17 +113,8 @@ func Authenticated() gin.HandlerFunc {
 				log.Print(err)
 				return
 			}
-			tokenCookie := &http.Cookie{
-				Name:     "token",
-				Path:     "/",
-				Value:    jwt,
-				Domain:   "localhost",
-				Expires:  time.Now().Add(1 * time.Hour),
-				Secure:   false,
-				HttpOnly: true,
-				SameSite: http.SameSiteLaxMode,
-			}
-			http.SetCookie(ctx.Writer, tokenCookie)
+			cookie := utils.CreateCookie("token", jwt, time.Now().Add(1*time.Hour))
+			http.SetCookie(ctx.Writer, cookie)
 
 		}
 		ctx.Set("uid", claims.Uid)

@@ -43,28 +43,10 @@ func CreateNewAccount() gin.HandlerFunc {
 				return
 			}
 
-			tokenCookie := &http.Cookie{
-				Name:     "token",
-				Path:     "/",
-				Value:    token,
-				Domain:   "localhost",
-				Expires:  time.Now().Add(1 * time.Hour),
-				Secure:   false,
-				HttpOnly: true,
-				SameSite: http.SameSiteLaxMode,
-			}
-			refreshTokenCookie := &http.Cookie{
-				Name:     "refreshtoken",
-				Path:     "/",
-				Value:    refreshToken,
-				Domain:   "localhost",
-				Expires:  time.Now().Add(7 * 24 * time.Hour),
-				Secure:   false,
-				HttpOnly: true,
-				SameSite: http.SameSiteLaxMode,
-			}
-			http.SetCookie(ctx.Writer, tokenCookie)
-			http.SetCookie(ctx.Writer, refreshTokenCookie)
+			cookie := utils.CreateCookie("token", token, time.Now().Add(1*time.Hour))
+			refcookie := utils.CreateCookie("token", refreshToken, time.Now().Add(7*24*time.Hour))
+			http.SetCookie(ctx.Writer, cookie)
+			http.SetCookie(ctx.Writer, refcookie)
 
 			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Success", true))
 			return
@@ -98,28 +80,10 @@ func LoginUser() gin.HandlerFunc {
 			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Couldn't Generate Token", false))
 			return
 		}
-		tokenCookie := &http.Cookie{
-			Name:     "token",
-			Path:     "/",
-			Value:    token,
-			Domain:   "localhost",
-			Expires:  time.Now().Add(1 * time.Hour),
-			Secure:   false,
-			HttpOnly: true,
-			SameSite: http.SameSiteLaxMode,
-		}
-		refreshTokenCookie := &http.Cookie{
-			Name:     "refreshtoken",
-			Path:     "/",
-			Value:    refreshToken,
-			Domain:   "localhost",
-			Expires:  time.Now().Add(7 * 24 * time.Hour),
-			Secure:   false,
-			HttpOnly: true,
-			SameSite: http.SameSiteLaxMode,
-		}
-		http.SetCookie(ctx.Writer, tokenCookie)
-		http.SetCookie(ctx.Writer, refreshTokenCookie)
+		cookie := utils.CreateCookie("token", token, time.Now().Add(1*time.Hour))
+		refcookie := utils.CreateCookie("token", refreshToken, time.Now().Add(7*24*time.Hour))
+		http.SetCookie(ctx.Writer, cookie)
+		http.SetCookie(ctx.Writer, refcookie)
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Success", true))
 	}
 }
@@ -188,28 +152,10 @@ func LoginViaMagicLink() gin.HandlerFunc {
 					ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Couldn't Generate Token", false))
 					return
 				}
-				tokenCookie := &http.Cookie{
-					Name:     "token",
-					Path:     "/",
-					Value:    token,
-					Domain:   "localhost",
-					Expires:  time.Now().Add(1 * time.Hour),
-					Secure:   false,
-					HttpOnly: true,
-					SameSite: http.SameSiteLaxMode,
-				}
-				refreshTokenCookie := &http.Cookie{
-					Name:     "refreshtoken",
-					Path:     "/",
-					Value:    refreshToken,
-					Domain:   "localhost",
-					Expires:  time.Now().Add(7 * 24 * time.Hour),
-					Secure:   false,
-					HttpOnly: true,
-					SameSite: http.SameSiteLaxMode,
-				}
-				http.SetCookie(ctx.Writer, tokenCookie)
-				http.SetCookie(ctx.Writer, refreshTokenCookie)
+				cookie := utils.CreateCookie("token", token, time.Now().Add(1*time.Hour))
+				refcookie := utils.CreateCookie("token", refreshToken, time.Now().Add(7*24*time.Hour))
+				http.SetCookie(ctx.Writer, cookie)
+				http.SetCookie(ctx.Writer, refcookie)
 				ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/dashboard", utils.GetString("CLIENT_ORIGIN")))
 				return
 			}
@@ -286,28 +232,8 @@ func VerifyUser() gin.HandlerFunc {
 
 func Logout() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		tokenCookie := &http.Cookie{
-			Name:     "token",
-			Path:     "/",
-			Value:    "",
-			Domain:   "localhost",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -1,
-			Secure:   false,
-			HttpOnly: true,
-			SameSite: http.SameSiteLaxMode,
-		}
-		refreshTokenCookie := &http.Cookie{
-			Name:     "refreshtoken",
-			Path:     "/",
-			Value:    "",
-			Domain:   "localhost",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -1,
-			Secure:   false,
-			HttpOnly: true,
-			SameSite: http.SameSiteLaxMode,
-		}
+		tokenCookie := utils.DeleteCookie("token")
+		refreshTokenCookie := utils.DeleteCookie("refreshtoken")
 		http.SetCookie(ctx.Writer, tokenCookie)
 		http.SetCookie(ctx.Writer, refreshTokenCookie)
 		ctx.JSON(http.StatusFound, utils.ResponseGenerator("Logged out", true))
@@ -451,17 +377,8 @@ func RedirectToChangePassword() gin.HandlerFunc {
 			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
 			return
 		}
-		tokenCookie := &http.Cookie{
-			Name:     "token",
-			Path:     "/",
-			Value:    token,
-			Domain:   "localhost",
-			Expires:  time.Now().Add(5 * time.Minute),
-			Secure:   false,
-			HttpOnly: true,
-			SameSite: http.SameSiteLaxMode,
-		}
-		http.SetCookie(ctx.Writer, tokenCookie)
+		cookie := utils.CreateCookie("token", token, time.Now().Add(5*time.Minute))
+		http.SetCookie(ctx.Writer, cookie)
 		ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/changepassword", utils.GetString("CLIENT_ORIGIN")))
 	}
 }
@@ -495,18 +412,8 @@ func ChangeForgotPassword() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occured", false))
 			return
 		}
-		tokenCookie := &http.Cookie{
-			Name:     "token",
-			Path:     "/",
-			Value:    "",
-			Domain:   "localhost",
-			Expires:  time.Unix(0, 0),
-			MaxAge:   -1,
-			Secure:   false,
-			HttpOnly: true,
-			SameSite: http.SameSiteLaxMode,
-		}
-		http.SetCookie(ctx.Writer, tokenCookie)
+		cookie := utils.DeleteCookie("token")
+		http.SetCookie(ctx.Writer, cookie)
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Updated Successfully", true))
 	}
 }
