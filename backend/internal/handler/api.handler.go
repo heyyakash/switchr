@@ -35,7 +35,6 @@ func GetFlagFromAPI() gin.HandlerFunc {
 		pid := ctx.MustGet("pid").(string)
 		key := string(ctx.Param("key"))
 		res, err := cache.Redisdb.Get(fmt.Sprintf("PID-%s-FLAG-%s", pid, key))
-		log.Print("Redis ", res)
 		if err != nil {
 			val, err := db.Store.GetFlagByNameAndPid(key, pid)
 			if err != nil {
@@ -49,7 +48,7 @@ func GetFlagFromAPI() gin.HandlerFunc {
 			ctx.JSON(http.StatusOK, gin.H{"flag": val})
 			return
 		}
-
+		log.Print("fetched from redis")
 		ctx.JSON(http.StatusOK, gin.H{"flag": res})
 	}
 }

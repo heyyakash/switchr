@@ -9,4 +9,6 @@
  #### Stage 2
  FROM scratch
  COPY --from=build /app/main /main
+ COPY --from=build /app/fullchain.pem /fullchain.pem
+ COPY --from=build /app/privkey.pem /privkey.pem
  ENTRYPOINT [ "/main" ]

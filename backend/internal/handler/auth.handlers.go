@@ -248,6 +248,7 @@ func GetRolesList() gin.HandlerFunc {
 			ctx.JSON(http.StatusOK, utils.ResponseGenerator(constants.Role, true))
 			return
 		}
+		log.Print("roles fetched from redis")
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator(val, true))
 
 	}

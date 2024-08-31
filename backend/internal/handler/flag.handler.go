@@ -60,7 +60,7 @@ func CreateFlag() gin.HandlerFunc {
 		}
 
 		// creating new cache
-		if err := cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", req.Pid, flag.Flag), flag); err != nil {
+		if err := cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", req.Pid, flag.Flag), flag.Value); err != nil {
 			log.Print(err)
 		}
 
@@ -72,11 +72,11 @@ func CreateFlag() gin.HandlerFunc {
 func GetFlagByFid() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		fid := string(ctx.Param("fid"))
-		val, err := cache.Redisdb.Get(fmt.Sprintf("FLAG-%s", fid))
-		if err == nil {
-			ctx.JSON(http.StatusOK, utils.ResponseGenerator(val, true))
-			return
-		}
+		// val, err := cache.Redisdb.Get(fmt.Sprintf("FLAG-%s", fid))
+		// if err == nil {
+		// 	ctx.JSON(http.StatusOK, utils.ResponseGenerator(val, true))
+		// 	return
+		// }
 		flagval, err := db.Store.GetFlagByFid(fid)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Bad request", false))
@@ -108,7 +108,7 @@ func DeleteFlag() gin.HandlerFunc {
 				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
 				return
 			}
-			cache.Redisdb.Del(fmt.Sprintf("FLAG-%s", fid))
+			cache.Redisdb.Del(fmt.Sprintf("PID-%s-FLAG-%s", userprojectmap.Pid, flag.Flag))
 			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Flag Deleted Successfully", true))
 			return
 		}
@@ -160,7 +160,7 @@ func UpdateFlag() gin.HandlerFunc {
 				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
 				return
 			}
-			cache.Redisdb.Set(fmt.Sprintf("FLAG-%s", fid), flag)
+			cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", userprojectmap.Pid, flag.Flag), flag)
 			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Flag Deleted Successfully", true))
 			return
 		}
