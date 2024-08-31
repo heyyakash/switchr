@@ -58,7 +58,7 @@ const SignUp = () => {
             })
             router.push('/dashboard')
         }else{
-            toast.error("Sign Up failed")
+            toast.error(res?.response.message)
         }
         
     }
