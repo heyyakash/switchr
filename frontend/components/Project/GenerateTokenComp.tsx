@@ -13,6 +13,7 @@ import { Input } from '../ui/input'
 import { toast } from 'sonner'
 import { CLIENT_STATIC_FILES_RUNTIME_REACT_REFRESH } from 'next/dist/shared/lib/constants'
 import { HTTPRequest } from '@/api/api'
+import Link from 'next/link'
 
 interface props {
     id: string
@@ -57,7 +58,8 @@ const GenerateTokenComp: React.FC<props> = (props) => {
                     </DialogHeader>
                     <hr />
                     <div className=' flex flex-col gap-3'>
-                        In order to retrieve the flags you need to generate an access token and send it with a GET request
+                        In order to retrieve the flags you need to generate an access token and send it with a GET request.
+                        <span>Check <a target='_blank' className='underline' href = "/docs">Docs</a></span>
                         <br />
                         <Button onClick={() => generateToken()} className=''>{generating ? (<RotateCw size={20} className='animate-spin' />) : ("Generate Token")}</Button>
                         {token && <Input className='cursor-pointer' type="text" value={token} onClick={(e) => copyToClipBoard(e)} />}
