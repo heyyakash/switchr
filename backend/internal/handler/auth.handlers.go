@@ -187,8 +187,8 @@ func SendVerificationMail() gin.HandlerFunc {
 		}
 		mail := &modals.Email{
 			To:      user.Email,
-			Subject: "Verification Email",
-			Content: fmt.Sprintf("Heyy!! Your verification link is below \n%s/user/verify/%s", host, token),
+			Subject: "Please Verify Your Email Address",
+			Content: fmt.Sprintf("Dear %s, \nWe hope this message finds you well.\nTo complete your registration process, please verify your email address by clicking the link below:\n\n%s/user/verify/%s", user.FullName, host, token),
 		}
 		if err := utils.SendEmail(mail); err != nil {
 			log.Print(err)
