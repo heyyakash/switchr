@@ -80,7 +80,7 @@ func LoginUser() gin.HandlerFunc {
 		token, refreshToken, err := utils.GenerateJWT(user.Uid)
 		if err != nil {
 			log.Print(err)
-			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Couldn't Generate Token", false))
+			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Internal Error Occurred", false))
 			return
 		}
 		cookie := utils.CreateCookie("token", token, time.Now().Add(1*time.Hour))
