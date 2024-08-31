@@ -29,7 +29,7 @@ func CreateProject() gin.HandlerFunc {
 		var req CreateProjectRequest
 		uid := ctx.MustGet("uid").(string)
 		if err := ctx.BindJSON(&req); err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Invalid field format", false))
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Invalid fields", false))
 			return
 		}
 		project := &modals.Projects{
