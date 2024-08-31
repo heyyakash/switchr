@@ -76,6 +76,18 @@ func DeleteMembers() gin.HandlerFunc {
 			return
 		}
 
+		if memberProjectMap.Role == constants.Role["owner"] {
+			allOwners, err := db.Store.FetchAllOwnersOfAProject(pid)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error occuered", false))
+				return
+			}
+			if len(allOwners) == 1 && allOwners[0].Uid == memberProjectMap.Uid {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Cannot remove the only remaining owner of the project", false))
+				return
+			}
+		}
+
 		if err := db.Store.DeleteUserProjectMapByUidPid(req.MemId, pid); err != nil {
 			log.Print(err)
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some error occured", false))

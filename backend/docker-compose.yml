@@ -39,6 +39,7 @@ services:
       SECURE_COOKIE: ${SECURE_COOKIE}
       CERTIFICATE: ${CERTIFICATE}
       KEY: ${KEY}
+      ENV: ${ENV}
     ports:
       - "8020:8020"
     depends_on: 

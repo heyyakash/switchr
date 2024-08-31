@@ -44,7 +44,7 @@ func CreateNewAccount() gin.HandlerFunc {
 			}
 
 			cookie := utils.CreateCookie("token", token, time.Now().Add(1*time.Hour))
-			refcookie := utils.CreateCookie("token", refreshToken, time.Now().Add(7*24*time.Hour))
+			refcookie := utils.CreateCookie("refreshtoken", refreshToken, time.Now().Add(7*24*time.Hour))
 			http.SetCookie(ctx.Writer, cookie)
 			http.SetCookie(ctx.Writer, refcookie)
 
@@ -81,7 +81,7 @@ func LoginUser() gin.HandlerFunc {
 			return
 		}
 		cookie := utils.CreateCookie("token", token, time.Now().Add(1*time.Hour))
-		refcookie := utils.CreateCookie("token", refreshToken, time.Now().Add(7*24*time.Hour))
+		refcookie := utils.CreateCookie("refreshtoken", refreshToken, time.Now().Add(7*24*time.Hour))
 		http.SetCookie(ctx.Writer, cookie)
 		http.SetCookie(ctx.Writer, refcookie)
 		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Success", true))
@@ -153,7 +153,7 @@ func LoginViaMagicLink() gin.HandlerFunc {
 					return
 				}
 				cookie := utils.CreateCookie("token", token, time.Now().Add(1*time.Hour))
-				refcookie := utils.CreateCookie("token", refreshToken, time.Now().Add(7*24*time.Hour))
+				refcookie := utils.CreateCookie("refreshtoken", refreshToken, time.Now().Add(7*24*time.Hour))
 				http.SetCookie(ctx.Writer, cookie)
 				http.SetCookie(ctx.Writer, refcookie)
 				ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/dashboard", utils.GetString("CLIENT_ORIGIN")))

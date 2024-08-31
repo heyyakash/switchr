@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 
+	"gihtub.com/heyyakash/switchr/internal/constants"
 	"gihtub.com/heyyakash/switchr/internal/modals"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -58,4 +59,13 @@ func (p *PostgresStore) DeleteUserProjectMapByUidPid(uid string, pid string) err
 
 		return nil
 	})
+}
+
+func (p *PostgresStore) FetchAllOwnersOfAProject(pid string) ([]modals.UserProjectMap, error) {
+	var ownersmap []modals.UserProjectMap
+	res := p.DB.Where("role = ?", constants.Role["owner"]).Where("pid = ?", pid).Find(&ownersmap)
+	if res.RowsAffected == 0 {
+		return ownersmap, errors.New("no owners found")
+	}
+	return ownersmap, res.Error
 }
