@@ -8,5 +8,5 @@ import (
 
 func ShareRoutes(c *gin.Engine) {
 	c.POST("/share", middleware.Authenticated(), handler.ShareProject())
-	c.GET("/share/confirm/:token", middleware.Authenticated(), handler.ConfirmShareProject())
+	c.GET("/share/confirm/:token", handler.ConfirmShareProject())
 }
