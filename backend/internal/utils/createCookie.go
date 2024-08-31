@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func CreateCookie(name string, value string, expires time.Time) *http.Cookie {
@@ -41,4 +43,11 @@ func DeleteCookie(name string) *http.Cookie {
 		SameSite: http.SameSiteLaxMode,
 	}
 	return cookie
+}
+
+func DeleteTokens(ctx *gin.Context) {
+	token := DeleteCookie("token")
+	reftoken := DeleteCookie("refreshtoken")
+	http.SetCookie(ctx.Writer, token)
+	http.SetCookie(ctx.Writer, reftoken)
 }
