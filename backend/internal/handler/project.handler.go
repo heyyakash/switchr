@@ -39,7 +39,7 @@ func CreateProject() gin.HandlerFunc {
 		err := db.Store.CreateProject(project)
 		if err != nil {
 			log.Print(err)
-			ctx.AbortWithStatusJSON(500, utils.ResponseGenerator("Some Error Occuered", false))
+			ctx.AbortWithStatusJSON(500, utils.ResponseGenerator("Some Error Occurred", false))
 			return
 		}
 		userprojectmap := &modals.UserProjectMap{
