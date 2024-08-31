@@ -19,7 +19,7 @@ func IsVerified() gin.HandlerFunc {
 			return
 		}
 		if !res.Verified {
-			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Resource cannot be accessed without verification", false))
+			ctx.AbortWithStatusJSON(http.StatusForbidden, utils.ResponseGenerator("Resource cannot be accessed without verification. Kindly navigate to settings to verify your email", false))
 			return
 		}
 		ctx.Next()

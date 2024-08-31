@@ -229,8 +229,7 @@ func VerifyUser() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Some Error Occured", false))
 			return
 		}
-		ctx.AbortWithStatusJSON(http.StatusOK, utils.ResponseGenerator("User Verified Successfullu", true))
-
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("User Verified Successfully", true))
 	}
 }
 
