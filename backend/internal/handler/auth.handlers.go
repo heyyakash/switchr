@@ -63,7 +63,7 @@ func LoginUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req modals.Users
 		if err := ctx.BindJSON(&req); err != nil {
-			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Fields Provided", false))
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Fields", false))
 			return
 		}
 		user, err := db.Store.GetUserByEmail(req.Email)
