@@ -42,7 +42,7 @@ const MagicLinks = () => {
         if(res?.response.success){
             toast.success("Kindly check your registered email inbox")
         }else{
-            toast.error("Some error occured")
+            toast.error(res?.response.message)
         }
         setSending(false)
     }
