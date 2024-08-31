@@ -32,7 +32,7 @@ func DeleteCookie(name string) *http.Cookie {
 		panic(err)
 	}
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     name,
 		Path:     "/",
 		Value:    "",
 		Domain:   GetString("DOMAIN"),
