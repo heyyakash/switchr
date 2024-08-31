@@ -51,7 +51,7 @@ func CreateNewAccount() gin.HandlerFunc {
 			http.SetCookie(ctx.Writer, cookie)
 			http.SetCookie(ctx.Writer, refcookie)
 
-			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Success", true))
+			ctx.JSON(http.StatusOK, utils.ResponseGenerator("New Account Created Successfully", true))
 			return
 		}
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("User already exists", false))
