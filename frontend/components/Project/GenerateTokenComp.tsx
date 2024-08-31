@@ -66,9 +66,7 @@ const GenerateTokenComp: React.FC<props> = (props) => {
                         <hr />
                         <p>Example</p>
                         <textarea value={
-                            `curl  -X GET \
-      '${process.env.NEXT_PUBLIC_BASE_URL}/api/get/<FLAG_NAME>'
-      --header 'token: <YOUR TOKEN>'`
+                            `curl -X GET '${process.env.NEXT_PUBLIC_BASE_URL}/api/get/<FLAG_NAME>' --header 'token: <YOUR TOKEN>'`
                         } className='p-2 bg-secondary h-[250px] rounded-lg w-full overflow-auto whitespace-pre-wrap'>
                         </textarea>
                     </div>
