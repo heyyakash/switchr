@@ -26,7 +26,10 @@ func CreateNewAccount() gin.HandlerFunc {
 		}
 		_, err := db.Store.GetUserByEmail(user.Email)
 		if err != nil {
-
+			if valid := utils.ValidatePassword(user.Password); !valid {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Invalid Password! The password should be atleast 8 characters long, with atleast 1 special character, atleast 1 uppercase character and atleast 1 number", false))
+				return
+			}
 			hashedPass := utils.Hash(user.Password)
 			user.Password = hashedPass
 			if err := db.Store.CreateAccount(&user); err != nil {
@@ -307,6 +310,11 @@ func ChangePassword() gin.HandlerFunc {
 			return
 		}
 
+		if valid := utils.ValidatePassword(req.New); !valid {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Invalid Password! The password should be atleast 8 characters long, with atleast 1 special character, atleast 1 uppercase character and atleast 1 number", false))
+			return
+		}
+
 		if checkNewHash := utils.CheckPassword(user.Password, req.New); checkNewHash {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("New and current password cannot be same", false))
 			return
@@ -405,6 +413,10 @@ func ChangeForgotPassword() gin.HandlerFunc {
 
 		if checkNewHash := utils.CheckPassword(user.Password, req.New); checkNewHash {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("New and current password cannot be same", false))
+			return
+		}
+		if valid := utils.ValidatePassword(req.New); !valid {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Invalid Password! The password should be atleast 8 characters long, with atleast 1 special character, atleast 1 uppercase character and atleast 1 number", false))
 			return
 		}
 		user.Password = utils.Hash(req.New)
