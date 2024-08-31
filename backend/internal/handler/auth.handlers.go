@@ -114,6 +114,7 @@ func SendMagicLink() gin.HandlerFunc {
 		}
 		user, err := db.Store.GetUserByEmail(req.Email)
 		if err != nil {
+			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("User does not exists", false))
 			return
 		}
 		token, err := utils.GenerateJWTWithType(user.Email, "magic_link", time.Now().Add(5*time.Minute).Unix())
@@ -258,7 +259,16 @@ func GetRolesList() gin.HandlerFunc {
 }
 
 func DeleteUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {}
+	return func(ctx *gin.Context) {
+		uid := ctx.MustGet("uid").(string)
+		if err := db.Store.DeleteUserByUid(uid); err != nil {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error occured", false))
+			return
+		}
+		utils.DeleteTokens(ctx)
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Account Deleted Successfully", true))
+	}
 }
 
 func UpdateUser() gin.HandlerFunc {

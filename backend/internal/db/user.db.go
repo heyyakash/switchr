@@ -56,6 +56,15 @@ func (p *PostgresStore) UpdateUser(user *modals.Users, uid string) error {
 	})
 }
 
+func (p *PostgresStore) DeleteUserByUid(uid string) error {
+	return p.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(modals.Users{}).Where("uid = ?", uid).Delete(&modals.Users{}).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
 func (p *PostgresStore) EmailExists(email string) bool {
 	var user modals.Users
 	res := p.DB.Where("email = ?", email).First(&user)

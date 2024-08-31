@@ -21,4 +21,5 @@ func AccountRouter(c *gin.Engine) {
 	c.POST("/user/forgot", handler.SendForgotPasswordLink())
 	c.GET("/changepass/:token", handler.RedirectToChangePassword())
 	c.POST("/user/changepass", middleware.VerifyForgotPasswordToken(), handler.ChangeForgotPassword())
+	c.DELETE(("/user"), middleware.Authenticated(), handler.DeleteUser())
 }
