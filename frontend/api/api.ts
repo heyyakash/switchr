@@ -12,7 +12,8 @@ export interface responseInterface {
 export async function HTTPRequest(
     endpoint: string,
     options: any,
-    method: string
+    method: string,
+    redirect :boolean = true
 ): Promise<responseInterface | null> {
     try {
         const base_url = process.env.NEXT_PUBLIC_BASE_URL as string
@@ -21,14 +22,15 @@ export async function HTTPRequest(
             credentials: "include",
             ...options
         })
-        console.log(req.status)
-        if (req.status === 302) {
-            Router.push('/login')
-            return null
-        }
-        if (req.status === 404) {
-            Router.push('/notfound')
-            return null
+        if(redirect){
+            if (req.status === 302) {
+                Router.push('/login')
+                return null
+            }
+            if (req.status === 404) {
+                Router.push('/notfound')
+                return null
+            }
         }
         const result = await req.json()
         return {

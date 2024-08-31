@@ -1,9 +1,13 @@
+import { HTTPRequest } from "@/api/api"
 import Login from "@/components/Auth/Login"
 import SignUp from "@/components/Auth/Signup"
+import Loading from "@/components/Loading/Loading"
 import { ModeToggle } from "@/components/Toggle"
 import { Button } from "@/components/ui/button"
+import { useQuery } from "@tanstack/react-query"
 import { Key } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { useState } from "react"
 
 const Auth = () => {
@@ -16,6 +20,14 @@ const Auth = () => {
         }
     }
 
+    const {data, isLoading} = useQuery({ queryKey: ["user"], queryFn: async () => { return (await HTTPRequest("/user", {}, "GET",false)) }})
+    const router = useRouter()
+
+
+    if (isLoading) return <Loading />
+    if(data?.status==200){
+        router.push("/dashboard")
+    }
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 grid-rows-1 font-inter  h-screen w-full">
             <div className="w-full h-full  hidden xl:flex p-10 justify-between flex-col bg-[url('/pattern.png')] bg-black/5 ">
