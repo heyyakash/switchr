@@ -6,9 +6,18 @@ import { useForm } from 'react-hook-form'
 import { Label } from '@radix-ui/react-dropdown-menu'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { RotateCw } from 'lucide-react'
+import { Check, RotateCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/router'
+import { Badge } from '../ui/badge'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
 
 interface userSettings {
     fullname: string
@@ -20,6 +29,8 @@ interface passwordUpdate {
 }
 
 const User = () => {
+    const [open, setOpen] = useState(false)
+    const [emailSent, setEmailSent] = useState(false)
     const [udpating, setUpdating] = useState(false)
     const [change, setChange] = useState(false)
     const [deleting, setDeleting] = useState(false)
@@ -81,11 +92,46 @@ const User = () => {
         setChange(false)
     }
 
+    const VerifyUser = async () => {
+        setEmailSent(false)
+        setOpen(true)
+        const res = await HTTPRequest("/user/verify", {}, "POST")
+        if (res?.response.success) {
+            toast.success(res.response.message)
+            setEmailSent(true)
+        } else {
+            toast.error(res?.response.message)
+        }
+    }
+
     if (isLoading) return <Loading />
     return (
         <div>
             <h2 className='text-2xl '>{data?.response.message?.fullname || "User"}&apos;s Settings</h2>
-            <div className='mt-12'>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Verifying User</DialogTitle>
+                        <DialogDescription className='flex items-center '>
+                            <div>
+                                {!emailSent ? (<RotateCw size={20} className='animate-spin' />) : (<Check />)}
+                            </div>
+                            <div className='w-full'>{emailSent ? "Verification email sent, kindly check your email" : "Sending verification email"}</div>
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+            {data?.response?.message?.verified ? (<></>) : (<>
+                <div className='mt-12'>
+                <h3 className='text-xl'>Verify Your Account</h3>
+                <hr className='my-3' />
+                <p className='text-primary/70 mb-3'>Before accessing any of the features of the app, you need to verify your email first</p>
+                <Button onClick={() => VerifyUser()} className='cursor-pointer' variant={"default"}>Verify</Button>
+                
+            </div>
+                
+            </>)}
+            <div className='mt-6'>
                 <h3 className='text-xl'>Edit User Details</h3>
                 <hr className='my-3' />
                 <p className='text-primary/70 mb-3'>You can change your current project name to another unique project name</p>
