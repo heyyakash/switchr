@@ -110,7 +110,7 @@ const Layout: React.FC<props> = (props) => {
                                         <div className='flex flex-col justify-center h-[150px] bg-secondary text-primary items-center'>
                                             <h2 className='text-4xl '>{data?.response?.message?.fullname?.split(" ").map((x:any)=>x[0])}</h2>
                                         </div>
-                                        <div className='bg-primary flex flex-col justify-center dark:text-black items-center'>
+                                        <div className=' flex flex-col justify-center text-primary items-center'>
                                             <h2 className='text-4xl '>{userprojectmap?.response?.message?.length}</h2>
                                             <p>Projects</p>
                                         </div>
