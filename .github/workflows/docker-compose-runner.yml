@@ -6,21 +6,17 @@ on:
       - 'backend/**'
 
 jobs:
-  push_to_rigistry:
-    name: Rerun Docker compose in server
+  run_job:
     runs-on: ubuntu-latest
-    steps: 
-      - name: Checkout the repo
-        uses: actions/checkout@v3
-
-      - name: SSH 
-        uses: webfactory/ssh-agent@v0.8.0
-        with: 
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      - name : SSH into digital ocean server
-        run : | 
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_IP }} "./switchr_commands.sh"
-
-            
+    timeout-minutes: 5
+    steps:
+    - name: Rerun docker compose
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        command_timeout: 30m
+        script: | 
+          ./switchr_commands.sh
         
