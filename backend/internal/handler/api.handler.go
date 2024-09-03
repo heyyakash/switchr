@@ -42,7 +42,7 @@ func GetFlagFromAPI() gin.HandlerFunc {
 				ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("Record not found", false))
 				return
 			}
-			if err := cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", pid, key), val); err != nil {
+			if err := cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", pid, key), val.Value); err != nil {
 				log.Print("Redis err : ", err)
 			}
 			ctx.JSON(http.StatusOK, gin.H{"flag": val})
