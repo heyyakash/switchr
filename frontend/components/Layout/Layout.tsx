@@ -19,7 +19,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-  } from "@/components/ui/dialog"
+} from "@/components/ui/dialog"
 import Loading from '../Loading/Loading'
 
 interface props {
@@ -45,9 +45,9 @@ const Layout: React.FC<props> = (props) => {
     if (data && !data.response.success || error) {
         router.push('/login')
     }
-    const logout = async() => {
+    const logout = async () => {
         await HTTPRequest("/user/logout", {}, "POST")
-    
+
     }
 
     const VerifyUser = async () => {
@@ -62,7 +62,7 @@ const Layout: React.FC<props> = (props) => {
         }
     }
 
-    if(isLoading) return <Loading />
+    if (isLoading) return <Loading />
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
@@ -80,14 +80,17 @@ const Layout: React.FC<props> = (props) => {
             </Dialog>
 
             <div className='w-full h-screen flex flex-col'>
-                <div className='h-[70px] border-b-[1.4px] border-secondary grid grid-rows-1 grid-cols-2 md:grid-cols-3 items-center p-4 px-6'>
-
+                <div className='h-[70px] relative border-b-[1.4px] border-secondary grid grid-rows-1 grid-cols-2 md:grid-cols-3 items-center p-4 px-6'>
+                    {data?.response?.message?.verified ? (<></>) : (
+                        <div className={`absolute w-full -bottom-[50px] h-[50px] bg-red-700 text-primary  flex items-center justify-center`}>
+                            You can&apos;t access all features of switchr without verifying your email. Click <span onClick={() => VerifyUser()} className='mx-1  underline underline-offset-4 font-extrabold cursor-pointer'>Here</span> to verify your email.
+                        </div>
+                    )}
                     <div className='flex items-center gap-4 w-full'>
                         <Link href="/dashboard" className="flex gap-2 items-center text-primary text-[1.2rem] font-medium ">
                             <Key size={"20px"} />
                         </Link>
                         / <Link href="/dashboard" className='text-md text-primary/50'>{data?.response?.message?.fullname}</Link>
-                        {data?.response?.message?.verified ? (<></>) : (<Badge onClick={() => VerifyUser()} className='cursor-pointer' variant={"destructive"}>Unverified</Badge>)}
                     </div>
 
                     <div className='hidden md:flex items-center gap-3 px-2 rounded-lg justify-center'>
@@ -99,23 +102,23 @@ const Layout: React.FC<props> = (props) => {
 
 
                     <div className='justify-self-end'>
-                        <div className='flex gap-2  w-[90px] items-center '>
+                        <div className='flex gap-2 w-[90px] items-center '>
                             <ModeToggle />
                             <Popover>
                                 <PopoverTrigger>
-                                    <div className='flex items-center justify-center h-10 w-10 rounded-full bg-primary text-secondary'>{data?.response?.message?.fullname?.split(" ").map((x:any)=>x[0])}</div>
+                                    <div className='flex items-center justify-center h-10 w-10 rounded-full bg-primary text-secondary'>{data?.response?.message?.fullname?.split(" ").map((x: any) => x[0])}</div>
                                 </PopoverTrigger>
                                 <PopoverContent className='mr-2 border-secondary flex flex-col gap-3'>
                                     <div className='w-full grid grid-cols-2 rounded-lg overflow-hidden grid-rows-1'>
                                         <div className='flex flex-col justify-center h-[150px] bg-secondary text-primary items-center'>
-                                            <h2 className='text-4xl '>{data?.response?.message?.fullname?.split(" ").map((x:any)=>x[0])}</h2>
+                                            <h2 className='text-4xl '>{data?.response?.message?.fullname?.split(" ").map((x: any) => x[0])}</h2>
                                         </div>
                                         <div className=' flex flex-col justify-center text-primary items-center'>
                                             <h2 className='text-4xl '>{userprojectmap?.response?.message?.length}</h2>
                                             <p>Projects</p>
                                         </div>
                                     </div>
-                                    <Link href = "/user"><Button variant={"secondary"} size={"lg"} className='w-full'>Settings</Button></Link>
+                                    <Link href="/user"><Button variant={"secondary"} size={"lg"} className='w-full'>Settings</Button></Link>
                                     <Button onClick={() => logout()} variant={"destructive"} size={"lg"} className='w-full bg-red-500'>Logout</Button>
                                 </PopoverContent>
                             </Popover>
@@ -123,7 +126,7 @@ const Layout: React.FC<props> = (props) => {
                     </div>
 
                 </div>
-                <div className='w-full h-full flex'>
+                <div className={`w-full h-full flex ${data?.response?.message?.verified ? "":"mt-[4rem]"}`}>
                     {props.children}
                 </div>
             </div>
