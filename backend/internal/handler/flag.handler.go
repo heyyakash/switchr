@@ -160,8 +160,8 @@ func UpdateFlag() gin.HandlerFunc {
 				ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Some Error Occurred", false))
 				return
 			}
-			cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", userprojectmap.Pid, flag.Flag), flag)
-			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Flag Deleted Successfully", true))
+			cache.Redisdb.Set(fmt.Sprintf("PID-%s-FLAG-%s", userprojectmap.Pid, flag.Flag), flag.Flag)
+			ctx.JSON(http.StatusOK, utils.ResponseGenerator("Flag Upated Successfully", true))
 			return
 		}
 
