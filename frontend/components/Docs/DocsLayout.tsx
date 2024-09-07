@@ -16,7 +16,7 @@ const links = [
   interface props {
     children : ReactNode
 }
-  const DocsLayout:React.FC<props> = ({children}) => {
+  const DocsLayout= (props:any) => {
     const router = useRouter()
     const path = router.pathname
     console.log(path)
@@ -34,13 +34,15 @@ const links = [
                 </nav>
             </Aside>
             <div className='prose dark:prose-invert mt-4'>
-                {children}
+                {props.children}
             </div>
 
         </div> 
     </div>
   )
 }
+
+DocsLayout.isMDX = true
 
 export default DocsLayout
 

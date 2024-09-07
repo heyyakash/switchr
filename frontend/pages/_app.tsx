@@ -7,13 +7,19 @@ import { Toaster } from "sonner";
 
 
 type ComponentType = {
-   Component: NextComponentType<NextPageContext, any, any> & { getLayout?: JSX.Element }
-   pageProps: any
- } 
+  Component: NextComponentType<NextPageContext, any, any> & { getLayout?: JSX.Element }
+  pageProps: any
+}
 
- export default function App({ Component, pageProps }: ComponentType) {
+const isComponentMDX = (component: any) => {
+  console.log("component", component.isMDX)
+  return component?.isMDX;
+}
+
+export default function App({ Component, pageProps }: ComponentType) {
   const layout = Component.getLayout
   const queryClient = new QueryClient()
+  isComponentMDX(Component)
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
@@ -22,15 +28,16 @@ type ComponentType = {
         enableSystem
         disableTransitionOnChange
       >
-        {layout?(
+        
+        {layout && !isComponentMDX(Component) ? (
           <Component {...pageProps} />
-          ):(
-            <Layout>
-          
+        ) : (
+          <Layout>
+
             <Component {...pageProps} />
-            </Layout>
-          )}
-        <Toaster expand = {true} richColors/>
+          </Layout>
+        )}
+        <Toaster expand={true} richColors />
       </ThemeProvider></QueryClientProvider>
   )
 }
