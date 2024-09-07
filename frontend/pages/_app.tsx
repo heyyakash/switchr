@@ -19,6 +19,7 @@ const isComponentMDX = (component: any) => {
 export default function App({ Component, pageProps }: ComponentType) {
   let layout = Component.getLayout
   const queryClient = new QueryClient()
+  console.log("name", Component.name)
   if (isComponentMDX(Component.name)){
     layout = <></>
   }
