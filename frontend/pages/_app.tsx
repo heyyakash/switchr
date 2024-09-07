@@ -6,11 +6,16 @@ import { NextComponentType, NextPageContext } from "next";
 import type { AppProps } from "next/app";
 import { useState } from "react";
 import { Toaster } from "sonner";
+import { MDXProvider } from '@mdx-js/react';
 
 type ComponentType = {
    Component: NextComponentType<NextPageContext, any, any> & { getLayout?: JSX.Element }
    pageProps: any
  } 
+ const components = {
+  h1: (props:any) => <h1 style={{ color: 'tomato' }} {...props} />,
+  // Add more custom components if needed
+};
 
 
  export default function App({ Component, pageProps }: ComponentType) {
@@ -24,7 +29,9 @@ type ComponentType = {
         enableSystem
         disableTransitionOnChange
       >
-        {layout?(
+         <MDXProvider components={components}>
+         <Component {...pageProps} />
+        {/* {layout?(
           <Component {...pageProps} />
           ):(
             <Layout>
@@ -32,7 +39,8 @@ type ComponentType = {
             <Component {...pageProps} />
             </Layout>
           )}
-        <Toaster expand = {true} richColors/>
+        <Toaster expand = {true} richColors/> */}
+        </MDXProvider>
       </ThemeProvider></QueryClientProvider>
   )
 }

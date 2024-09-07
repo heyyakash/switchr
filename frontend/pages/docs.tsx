@@ -1,13 +1,55 @@
+import Aside from '@/components/Docs/DocsAside'
 import Nav from '@/components/LandingPage/Nav'
-import { Badge } from '@/components/ui/badge'
-import React from 'react'
+import GettingStarted from "./test.md"
+import rehypeHighlight from 'rehype-highlight'
+import Link from 'next/link'
+import React, { ReactNode } from 'react'
+import ReactMarkdown from 'react-markdown';
+import { useMDXComponents } from '@/mdx-components'
 
-const Docs = () => {
+const links = [
+    { name: "Introduction", href: "/docs/introduction" },
+    { name: "Getting Started", href: "/docs/getting-started" },
+    { name: "New Project", href: "/docs/components" },
+    { name: "New Flags", href: "/docs/customization" },
+    { name: "FAQs", href: "/docs/faqs" },
+  ];
+
+interface props {
+    children : ReactNode
+}
+
+const Docs: React.FC<props> = ({children}) => {
   return (
     <>
         <Nav />
-        <div className='max-w-[1200px] py-[6rem] w-full mx-auto'>
-            <h2 className='text-3xl font-semibold text-center pt-[4rem]'>
+        <div className='max-w-[1200px] flex  relative py-[6rem] w-full mx-auto'>
+            <Aside>
+                <nav className='flex flex-col gap-2'>
+                    {links.map((x,i)=>{
+                        return(
+                            <Link href = {x.href} key = {i}>{x.name}</Link> 
+                        )
+                    })}
+                </nav>
+            </Aside>
+            <div className='no-tailwind '>
+            </div>
+
+        </div> 
+    </>
+  )
+}
+
+export default Docs
+
+
+Docs.getLayout = () => {
+    return <></>
+  }
+
+
+              {/* <h2 className='text-3xl font-semibold text-center pt-[4rem]'>
                 Accessing feature flags using REST API
             </h2>
             <div className='text-primary/70 mt-12 text-xl px-4 flex flex-col gap-3'>
@@ -23,15 +65,4 @@ const Docs = () => {
                 curl -X GET &apos;{process.env.NEXT_PUBLIC_BASE_URL}/api/get/FLAG_NAME&apos;
                 --header &apos;token: &lt;YOUR_TOKEN / KEY&gt;&apos;;
                 </div>
-            </div>
-        </div> 
-    </>
-  )
-}
-
-export default Docs
-
-
-Docs.getLayout = () => {
-    return <></>
-  }
+            </div> */}

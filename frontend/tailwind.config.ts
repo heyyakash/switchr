@@ -7,7 +7,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
 
@@ -74,8 +74,8 @@ const config = {
           to: { height: "0" },
         },
       },
-      fontFamily:{
-        inter:['Inter']
+      fontFamily: {
+        inter: ['Inter']
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -83,7 +83,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
 } satisfies Config
 
 export default config

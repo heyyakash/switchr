@@ -4,6 +4,8 @@
 @tailwind utilities;
 
 
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -60,13 +62,33 @@
     --chart-5: 340 75% 55%;
   }
 }
+*::-webkit-scrollbar {
+  width: 8px; /* Adjust the width of the scrollbar */
+}
 
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(132, 128, 128, 0.647); /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Optional: adds rounded corners to the scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0); /* Color of the scrollbar track */
+}
+
+
+.no-tailwind {
+  all: unset; /* Unsets all styles including margins, paddings, and more */
+  display: block; /* Set display manually if needed */
+}
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground font-inter;
+  }
+  h1{
+    @apply text-5xl font-extrabold;
   }
 }
 
