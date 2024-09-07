@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
-
 const links = [
   { name: "Introduction", href: "/docs/introduction" },
   { name: "Getting Started", href: "/docs/gettingstarted" },
@@ -14,9 +13,6 @@ const links = [
   { name: "REST API", href: "/docs/restapi" },
 ];
 
-interface props {
-  children: ReactNode
-}
 const DocsLayout = (props: any) => {
   const router = useRouter()
   const path = router.pathname
