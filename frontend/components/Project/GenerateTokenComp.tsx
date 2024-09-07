@@ -59,7 +59,7 @@ const GenerateTokenComp: React.FC<props> = (props) => {
                     <hr />
                     <div className=' flex flex-col gap-3'>
                         In order to retrieve the flags you need to generate an access token and send it with a GET request.
-                        <span>Check <a target='_blank' className='underline' href = "/docs">Docs</a></span>
+                        <span>Check <a target='_blank' className='underline' href = "/docs/restapi">Docs</a></span>
                         <br />
                         <Button onClick={() => generateToken()} className=''>{generating ? (<RotateCw size={20} className='animate-spin' />) : ("Generate Token")}</Button>
                         {token && <Input className='cursor-pointer' type="text" value={token} onClick={(e) => copyToClipBoard(e)} />}

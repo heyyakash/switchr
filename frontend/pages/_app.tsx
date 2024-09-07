@@ -1,3 +1,4 @@
+import DocsLayout from "@/components/Docs/DocsLayout";
 import Layout from "@/components/Layout/Layout";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
@@ -12,14 +13,17 @@ type ComponentType = {
 }
 
 const isComponentMDX = (component: any) => {
-  console.log("component", component.isMDX)
-  return component?.isMDX;
+  return component === "MDXContent"
 }
 
 export default function App({ Component, pageProps }: ComponentType) {
-  const layout = Component.getLayout
+  let layout = Component.getLayout
   const queryClient = new QueryClient()
-  isComponentMDX(Component)
+  if (isComponentMDX(Component.name)){
+    console.log(true)
+    layout = <></>
+  }
+  
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
@@ -28,9 +32,14 @@ export default function App({ Component, pageProps }: ComponentType) {
         enableSystem
         disableTransitionOnChange
       >
-        
-        {layout && !isComponentMDX(Component) ? (
-          <Component {...pageProps} />
+        {layout? (
+          isComponentMDX(Component.name) ? (
+            <DocsLayout>
+              <Component {...pageProps} />
+            </DocsLayout>
+          ):(
+            <Component {...pageProps} />
+          )
         ) : (
           <Layout>
 
