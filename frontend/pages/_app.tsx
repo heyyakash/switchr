@@ -20,7 +20,6 @@ export default function App({ Component, pageProps }: ComponentType) {
   let layout = Component.getLayout
   const queryClient = new QueryClient()
   if (isComponentMDX(Component.name)){
-    console.log(true)
     layout = <></>
   }
   
