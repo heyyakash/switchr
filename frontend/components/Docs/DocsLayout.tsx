@@ -25,7 +25,7 @@ const DocsLayout = (props: any) => {
     <div className='relative'>
       <Nav />
 
-      <div className='max-w-[1200px]  flex flex-col relative py-[6rem] z-[1] w-full mx-auto'>
+      <div className='max-w-[1200px]  flex flex-col lg:flex-row relative py-[6rem] z-[1] w-full mx-auto'>
         <HamburgerMenuIcon onClick={()=>setOpen(true)} className='mx-4 lg:hidden' />
         <Aside open = {open} setOpen = {setOpen}>
           <nav className='flex flex-col gap-2'>
