@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextComponentType, NextPageContext } from "next";
+import Router, { useRouter } from "next/router";
 import { Toaster } from "sonner";
 
 
@@ -18,11 +19,12 @@ const isComponentMDX = (component: any) => {
 
 export default function App({ Component, pageProps }: ComponentType) {
   let layout = Component.getLayout
-  const queryClient = new QueryClient()
-  console.log("name", Component.name)
-  if (isComponentMDX(Component.name)){
-    layout = <></>
+  const router = useRouter()
+  const isDocsPage = router.pathname.startsWith('/docs');
+  if (isDocsPage){
+    layout= <></>
   }
+  const queryClient = new QueryClient()
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -32,15 +34,14 @@ export default function App({ Component, pageProps }: ComponentType) {
         enableSystem
         disableTransitionOnChange
       >
-        {layout? (
-          isComponentMDX(Component.name) ? (
-            <DocsLayout>
-              <Component {...pageProps} />
-            </DocsLayout>
-          ):(
-            <Component {...pageProps} />
-          )
-        ) : (
+        {layout? isDocsPage ?(
+          <DocsLayout>
+          <Component {...pageProps} />
+          </DocsLayout>
+        ):(
+          <Component {...pageProps} />
+        )
+         : (
           <Layout>
 
             <Component {...pageProps} />

@@ -11,7 +11,6 @@ import { Button } from '../ui/button'
 import { RotateCw } from 'lucide-react'
 import { Input } from '../ui/input'
 import { toast } from 'sonner'
-import { CLIENT_STATIC_FILES_RUNTIME_REACT_REFRESH } from 'next/dist/shared/lib/constants'
 import { HTTPRequest } from '@/api/api'
 import Link from 'next/link'
 

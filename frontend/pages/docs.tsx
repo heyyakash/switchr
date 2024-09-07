@@ -15,14 +15,14 @@ const Docs = () => {
 }
 
 export default Docs
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     return {
-//       redirect: {
-//         destination: '/docs/introduction',
-//         permanent: true, // Set to true if this is a permanent redirect
-//       },
-//     };
-//   };
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    return {
+      redirect: {
+        destination: '/docs/introduction',
+        permanent: true, // Set to true if this is a permanent redirect
+      },
+    };
+  };
 
 Docs.getLayout = () => {
     return <></>
