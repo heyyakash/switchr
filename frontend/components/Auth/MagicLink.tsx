@@ -40,7 +40,7 @@ const MagicLinks = () => {
         setSending(true)
         const res = await HTTPRequest(`/user/magic`, {body: JSON.stringify(values)}, "POST" )
         if(res?.response.success){
-            toast.success("Kindly check your registered email inbox")
+            toast.success(res.response.message)
         }else{
             toast.error(res?.response.message)
         }

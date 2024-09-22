@@ -73,7 +73,7 @@ const Layout: React.FC<props> = (props) => {
                             <div>
                                 {!emailSent ? (<RotateCw size={20} className='animate-spin' />) : (<Check />)}
                             </div>
-                            <div className='w-full'>{emailSent ? "Verification email sent, kindly check your email" : "Sending verification email"}</div>
+                            <div className='w-full'>{emailSent ? "Verification email sent, kindly check your inbox, if not received kindly look into spam " : "Sending verification email"}</div>
                         </DialogDescription>
                     </DialogHeader>
                 </DialogContent>
