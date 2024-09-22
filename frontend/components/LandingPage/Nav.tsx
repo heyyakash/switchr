@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Key} from 'lucide-react'
 import React from 'react'
 import { Button } from '../ui/button'

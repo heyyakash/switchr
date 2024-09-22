@@ -20,6 +20,9 @@ const Home = () => {
       <section className="w-full py-[6rem] bg-[url('/pattern.png')]">
         <div className=" max-w-[1200px] w-full min-h-[500px] mx-auto flex flex-col items-center p-4 lg:p-0 justify-center gap-[3rem]">
           <h1 className={`bg-gradient-to-r ${mainBg} mt-5 bg-clip-text text-transparent p-4 text-3xl lg:text-6xl font-extrabold text-center lg:leading-[3.5rem] transition-all duration-500`}>
+          <a href="https://www.producthunt.com/posts/switchr-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-switchr&#0045;2" className="w-full flex items-center justify-center mb-2" target="_blank">
+                <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=487931&theme=dark" alt="Switchr - Dynamic&#0032;Feature&#0032;Flag&#0032;Management&#0032;Tool | Product Hunt" className='w-[200px] lg:w-[250px]' />
+                </a>
             Supercharge Your Development <br /> with Dynamic Feature Flags
           </h1>
           {/* <p className="w-[600px] text-lg text-center text-primary/80">Switchr is a powerful and dynamic feature flag management tool that lets you control your features in real-time. Seamlessly manage, toggle, and test features without redeploying your code.</p> */}

@@ -10,6 +10,8 @@ const Footer = () => {
                 <Key size={27} />
                 <p className="text-xl font-semibold">Switchr</p>
                 <a href="https://github.com/heyyakash/switchr" target='_blank'><Badge>Github</Badge></a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSf4Q8vVbrItyhW1iZ0sXQSKGbjKKRvi4G8F-iNLpsRkn3TQ-A/viewform?usp=sf_link" target='_blank'><Badge variant={"outline"}>Feedback</Badge></a>
+
             </div>
            
             <p className='text-lg flex gap-2 items-center text-primary/70'> <Copyright /> Switchr, Based in India</p>
