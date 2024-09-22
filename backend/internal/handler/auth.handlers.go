@@ -131,7 +131,7 @@ func SendMagicLink() gin.HandlerFunc {
 			log.Print(err)
 			return
 		}
-		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email sent successfully", true))
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email sent successfully! Kindly check your inbox, if not received kindly check the spam folder", true))
 	}
 }
 func LoginViaMagicLink() gin.HandlerFunc {
@@ -195,7 +195,7 @@ func SendVerificationMail() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
 			return
 		}
-		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email has been sent!", true))
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email has been sent! kindly check your email, if not received kindly look into your spam", true))
 	}
 }
 
