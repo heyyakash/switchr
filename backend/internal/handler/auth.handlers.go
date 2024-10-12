@@ -212,6 +212,7 @@ func VerifyUser() gin.HandlerFunc {
 		}
 		if !valid {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Link has expired", false))
+			return
 		}
 		if claims.Type != "verification" {
 			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("Bad Request", false))
