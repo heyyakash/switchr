@@ -179,7 +179,7 @@ func SendVerificationMail() gin.HandlerFunc {
 			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
 			return
 		}
-		token, err := utils.GenerateJWTWithType(user.Email, "verification", time.Now().Add(5*time.Minute).Unix())
+		token, err := utils.GenerateJWTWithType(user.Email, "verification", time.Now().Add(10*time.Minute).Unix())
 		if err != nil {
 			log.Print("Error : Could not generate JWT : ", err)
 			ctx.JSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
