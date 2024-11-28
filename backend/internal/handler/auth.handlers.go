@@ -195,7 +195,7 @@ func SendVerificationMail() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, utils.ResponseGenerator("Error sending email!", false))
 			return
 		}
-		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email has been sent! kindly check your email, if not received kindly look into your spam", true))
+		ctx.JSON(http.StatusOK, utils.ResponseGenerator("Email has been sent! kindly check your email, if not received kindly look into the spam folder", true))
 	}
 }
 
