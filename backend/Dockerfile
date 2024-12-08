@@ -1,5 +1,5 @@
  #### Stage 1
- FROM golang:1.21.4-alpine AS build
+ FROM golang:1.23.4-alpine AS build
  RUN mkdir /app
  COPY . /app
  WORKDIR /app
