@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RotateCw } from 'lucide-react'
+import Router from 'next/router'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -20,6 +21,7 @@ const ChangePassword = () => {
     const res = await HTTPRequest(`/user/changepass`, {body: JSON.stringify(data)}, "POST" )
     if(res?.response.success){
         toast.success(res.response.message)
+        Router.push('/login')
     }else{
         toast.error(res?.response.message)
     }
