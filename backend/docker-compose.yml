@@ -40,6 +40,7 @@ services:
       CERTIFICATE: ${CERTIFICATE}
       KEY: ${KEY}
       ENV: ${ENV}
+      RESEND_KEY : ${RESEND_KEY}
     ports:
       - "8020:8020"
     depends_on: 

@@ -9,6 +9,7 @@ import (
 	"gihtub.com/heyyakash/switchr/internal/cache"
 	"gihtub.com/heyyakash/switchr/internal/constants"
 	"gihtub.com/heyyakash/switchr/internal/db"
+	emailtemplates "gihtub.com/heyyakash/switchr/internal/email-templates"
 	"gihtub.com/heyyakash/switchr/internal/modals"
 	"gihtub.com/heyyakash/switchr/internal/utils"
 	"github.com/gin-gonic/gin"
@@ -117,6 +118,10 @@ func SendMagicLink() gin.HandlerFunc {
 			ctx.JSON(http.StatusBadRequest, utils.ResponseGenerator("User does not exists", false))
 			return
 		}
+		if !user.Verified {
+			ctx.JSON(http.StatusForbidden, utils.ResponseGenerator("Cannot send magic link since user is not verified", false))
+			return
+		}
 		token, err := utils.GenerateJWTWithType(user.Email, "magic_link", time.Now().Add(5*time.Minute).Unix())
 		if err != nil {
 			log.Print(err)
@@ -125,7 +130,7 @@ func SendMagicLink() gin.HandlerFunc {
 		email := &modals.Email{
 			To:      req.Email,
 			Subject: "Magic Link",
-			Content: fmt.Sprintf("Heyy! Your login link is as follows and is only valid for 5 minutes. \n%s/user/magic/verify/%s", utils.GetString("HOST"), token),
+			Content: emailtemplates.GenerateMagicLinkEmailTemplate(utils.GetString("HOST"), token),
 		}
 		if err := utils.SendEmail(email); err != nil {
 			log.Print(err)
@@ -188,7 +193,7 @@ func SendVerificationMail() gin.HandlerFunc {
 		mail := &modals.Email{
 			To:      user.Email,
 			Subject: "Please Verify Your Email Address",
-			Content: fmt.Sprintf("Dear %s, \nWe hope this message finds you well.\nTo complete your registration process, please verify your email address by clicking the link below:\n\n%s/user/verify/%s", user.FullName, host, token),
+			Content: emailtemplates.GenerateVerificationEmail(user.FullName, host, token),
 		}
 		if err := utils.SendEmail(mail); err != nil {
 			log.Print(err)
@@ -230,7 +235,20 @@ func VerifyUser() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ResponseGenerator("Some Error Occured", false))
 			return
 		}
-		ctx.JSON(http.StatusOK, utils.ResponseGenerator("User Verified Successfully", true))
+		ctx.Data(http.StatusOK, "text/html; charset=utf-8", []byte(`
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Verification Successful</title>
+		</head>
+		<body style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
+			<h1 style="color: green;">Verification Successful</h1>
+			<p>Your email has been verified successfully. You can now <a href = "`+utils.GetString("CLIENT_ORIGIN")+`/login">Log In</a> to your account.</p>
+		</body>
+		</html>
+	`))
 	}
 }
 
@@ -367,7 +385,7 @@ func SendForgotPasswordLink() gin.HandlerFunc {
 		log.Print("Token : ", jwt)
 		email := modals.Email{
 			To:      req.Email,
-			Content: fmt.Sprintf("Heyy %s, Your link to reset your switchr account password is \n%s/changepass/%s \nThe link is active for 5 minutes only", user.FullName, utils.GetString("HOST"), jwt),
+			Content: emailtemplates.GenerateChangePasswordEmail(user.FullName, utils.GetString("HOST"), jwt),
 			Subject: "Change Switchr Account Password",
 		}
 		if err := utils.SendEmail(&email); err != nil {

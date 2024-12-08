@@ -58,7 +58,7 @@ func main() {
 
 	//initializing routes
 	InitRoutes(r)
-
+	log.Print("mode : ", utils.GetString("ENV"))
 	//starting server
 	if utils.GetString("ENV") == "prod" {
 		r.RunTLS(":8020", utils.GetString("CERTIFICATE"), utils.GetString("KEY"))

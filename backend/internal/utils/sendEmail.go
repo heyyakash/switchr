@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"context"
 	"crypto/tls"
 	"log"
 	"net/smtp"
 
 	"gihtub.com/heyyakash/switchr/internal/modals"
+	"github.com/resend/resend-go/v2"
 )
 
 var (
@@ -15,7 +17,7 @@ var (
 	smtpPass  = GetString("SMTP_PASSWORD")
 )
 
-func SendEmail(mail *modals.Email) error {
+func SendEmailold(mail *modals.Email) error {
 	mode := GetString("ENV")
 	if mode == "prod" {
 		// Set up authentication information.
@@ -88,4 +90,24 @@ func SendEmail(mail *modals.Email) error {
 	message := []byte(mail.Subject + "\r\n" + mail.Content)
 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, smtpEmail, []string{mail.To}, []byte(message))
 	return err
+}
+
+func SendEmail(mail *modals.Email) error {
+	apikey := GetString("RESEND_KEY")
+	ctx := context.TODO()
+	client := resend.NewClient(apikey)
+	params := &resend.SendEmailRequest{
+		From:    "Switchr <switchr@dev-server.live>",
+		To:      []string{mail.To},
+		Subject: mail.Subject,
+		Html:    mail.Content,
+	}
+
+	_, err := client.Emails.SendWithContext(ctx, params)
+	if err != nil {
+		log.Print("Failed to send email : ", err)
+		return err
+	}
+
+	return nil
 }
