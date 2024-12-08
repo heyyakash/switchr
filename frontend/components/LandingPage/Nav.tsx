@@ -14,7 +14,7 @@ const Nav = () => {
                     <p className="text-xl font-semibold">Switchr</p>
                 </Link>
                 <div className="flex items-center gap-3">
-                    <Link href = "/docs"><Button variant={"secondary"}>API Docs</Button></Link>
+                    <a href = "https://switchr.hashnode.space/default-guide/introduction"><Button variant={"secondary"}>API Docs</Button></a>
                     <Link href="/login"><Button>Login</Button></Link>
                     <ModeToggle />
                 </div>
