@@ -73,7 +73,7 @@ func GetProject() gin.HandlerFunc {
 		_, err := db.Store.GetUserProjectMapByUidAndPid(uid, pid)
 		if err != nil {
 			log.Print(err)
-			ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("Not Found", false))
+			ctx.AbortWithStatusJSON(http.StatusNotFound, utils.ResponseGenerator("Resource Not Found", false))
 			return
 		}
 		val, err := cache.Redisdb.Get(fmt.Sprintf("PROJECT-%s", pid))
