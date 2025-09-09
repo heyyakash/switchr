@@ -61,7 +61,8 @@ func main() {
 	log.Print("mode : ", utils.GetString("ENV"))
 	//starting server
 	if utils.GetString("ENV") == "prod" {
-		r.RunTLS(":8020", utils.GetString("CERTIFICATE"), utils.GetString("KEY"))
+		// r.RunTLS(":8020", utils.GetString("CERTIFICATE"), utils.GetString("KEY"))
+		r.Run(":8020")
 	} else {
 		r.Run(":8020")
 	}
