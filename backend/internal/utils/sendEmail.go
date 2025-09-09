@@ -97,7 +97,7 @@ func SendEmail(mail *modals.Email) error {
 	ctx := context.TODO()
 	client := resend.NewClient(apikey)
 	params := &resend.SendEmailRequest{
-		From:    "Switchr <switchr@dev-server.live>",
+		From:    "Switchr <switchr@byakash.dev>",
 		To:      []string{mail.To},
 		Subject: mail.Subject,
 		Html:    mail.Content,
